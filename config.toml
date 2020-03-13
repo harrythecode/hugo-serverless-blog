@@ -1,0 +1,34 @@
+###
+# Global settings
+###
+baseURL         = "https://amezou.com/"
+languageCode    = "ja-JP"
+title           = "サーバレスブログ"
+theme           = "hugo-notepadium"
+hasCJKLanguage  = true
+enableRobotsTXT = true
+disableToc      = true
+# //
+###
+
+[params]
+style   = "light"
+slogan  = "世の中のイケてる技術を紹介していきます。"
+license = "(C) 2020, All Rights Reserved."
+og_image = "/thumbnails/default.png"
+
+[params.nav]
+showCategories = true   # /categories/
+showTags       = true   # /tags/
+
+# custom navigation items
+
+[[params.nav.custom]]
+title = "About"
+url   = "/about/"
+
+[markup.goldmark.renderer]
+unsafe = true  # enable raw HTML in Markdown
+
+[params.assets]
+css = ["css/font.css"]
