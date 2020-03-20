@@ -3,6 +3,8 @@
 from PIL import ImageFont, ImageDraw, Image
 import sys
 import yaml
+import os.path
+from os import path
 
 def add_text_to_image(img, base_text, font_path, font_size, font_color, height, width, line=1, max_length=700, max_height=420):
     font = ImageFont.truetype(font_path, font_size)
@@ -38,7 +40,11 @@ def add_text_to_image(img, base_text, font_path, font_size, font_color, height, 
     return img
 
 target = sys.argv[1]
-print("target:%s" % target)
+if (path.exists(target)):
+    print("skipping:%s because the thumbnail already exists." % target)
+    exit(0)
+else:
+    print("target:%s" % target)
 
 with open('%s' % target) as f:
     md          = f.read().split("---")

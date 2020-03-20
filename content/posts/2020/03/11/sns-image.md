@@ -4,7 +4,7 @@ date  : 2020-03-11T13:55:46+01:00
 draft : false
 tags  : [
     "hugo",
-    "hugo-customize"
+    "hugo-custom"
 ]
 categories: [
     "Twitterカード画像の自動生成化",
