@@ -7,7 +7,6 @@ title           = "サーバレスブログ"
 theme           = "hugo-notepadium"
 hasCJKLanguage  = true
 enableRobotsTXT = true
-disableToc      = true
 # //
 ###
 
@@ -16,6 +15,7 @@ style   = "light"
 slogan  = "世の中のイケてる技術を紹介していきます。"
 license = "(C) 2020, All Rights Reserved."
 og_image = "/thumbnails/default.png"
+twitterUser = "@amezousan"
 
 [params.nav]
 showCategories = true   # /categories/

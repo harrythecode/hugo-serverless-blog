@@ -21,7 +21,7 @@ create: validate-create ## Create a new post in posts folder
 
 deploy: ## Deploy public folder
 	@echo "== Deploying"
-	@rm -rf ./public/
+	@find ./public -type f -mtime +14 -exec rm -f {} \;
 	@sh create_images.sh
 	@hugo -t hugo-notepadium
 

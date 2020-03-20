@@ -4,7 +4,7 @@ date  : 2020-03-10T18:08:02+01:00
 draft : false
 tags  : [
     "hugo",
-    "hugo-customize"
+    "hugo-custom"
 ]
 categories: [
     "サーバレスブログ",
