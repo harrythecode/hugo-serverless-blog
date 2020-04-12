@@ -1,0 +1,28 @@
+name: development
+
+on:
+  push:
+    branches: [ development ]
+
+jobs:
+  deploy:
+    name: Sync S3 bucket with serverless blog
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.6]
+        
+    steps:
+    # To access git repo
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+    - name: Install pillow via pip
+      run: pip instal Pillow==7.0.0
+    - name: Install pyyaml via pip
+      run: pip instal pyyaml==5.3.1
+    - name: Make deploy
+      run: make deploy
