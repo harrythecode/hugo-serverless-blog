@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.e0e9a90775a362ffb0a0e38b1d12c95c7c92a12c3dbe4525162fae73da0c078303e0a523689197b84fdbcb5a506b0585.css" integrity="sha384-4OmpB3WjYv&#43;woOOLHRLJXHySoSw9vkUlFi&#43;uc9oMB4MD4KUjaJGXuE/by1pQawWF">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/03/22/cost-lambda/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-03-22-cost-lambda.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-03-22-cost-lambda.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】</h1><p class="article date">2020-03-22</p></section><article class="article markdown-body"><p>本記事は「<a href="https://amezou.com/posts/2020/03/22/cli-lambda/"target="_blank">AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】</a>」の続きです。</p>
+<p>前回の記事ではLambdaで実行するコマンドの確認を行いました。今回は実際に下記通り実装を進めていきます。</p>
+<h1 id="lambdaの概要">Lambdaの概要</h1>
+<ul>
+<li>言語: Nodejs 12.x</li>
+<li>名前: monitoringAwsCost</li>
+<li>実行IAMロール: aws-cost-monitoring (<a href="https://amezou.com/posts/2020/03/21/aws-cost/"target="_blank">AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】</a>で作成済み)</li>
+</ul>
+<p>何かを実装する前には、何を実現したいのかコメントを書きましょう。こうすることで実装中に余計なことを考えずに、その指示にしたがってひたすらコードを書くだけで良くなります。</p>
+<pre><code># Lambda内でやりたいこと
+# 1. STSを利用して特定のIAMロールにスイッチ
+# 2. Cloudwatch Metricsでコスト取得
+# 3. 取得したデータをSlackで綺麗に表示されるようフォーマット
+# 4. Slackに通知
+</code></pre><p>今回は「<a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudWatch.html#getMetricData-property"target="_blank">AWS Javascript SDK - getMetricData</a>」を参考にしながら開発を進めます。</p>
+<h2 id="準備編">準備編</h2>
+<p>今回のフォルダ構成は下記の通りです。</p>
+<pre><code>lambda_scripts/
+├── Makefile
+├── functions
+│   └── monitoringAwsCost
+│       ├── helper-functions.js
+│       ├── index.js
+│       ├── node_modules
+│       └── package-lock.json (自動生成)
+└── project.json
+</code></pre><ul>
+<li><code>$ npm install moment</code> で、<a href="https://www.npmjs.com/package/moment"target="_blank">moment</a>をインストール。</li>
+<li><code>$ npm install @slack/webhook</code> で、<a href="https://www.npmjs.com/package/@slack/webhook"target="_blank">@slack/webhook</a>をインストール。</li>
+<li>Apexを使ってLambdaを管理 <a href="https://dev.classmethod.jp/articles/how-to-manage-aws-lambda-functions-with-apex/"target="_blank">ApexでAWS Lambdaファンクションを管理する</a></li>
+</ul>
+<blockquote>
+<p>monitoringAwsCost配下のファイル全て(monitoringAwsCostフォルダを除く)を「monitoringAwsCost.zip」ファイルにして直接Lambdaにアップロードすることも可能。</p>
+</blockquote>
+<h2 id="まずは完成品から">まずは完成品から</h2>
+<ul>
+<li>helper-function.js</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AWS</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;aws-sdk&#39;</span>)
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sts</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">STS</span>({<span style="color:#a6e22e">region</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;us-east-1&#39;</span>});
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getCrossAccountCredentials</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">async</span> (<span style="color:#a6e22e">role_arn</span>) =&gt; {
+  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Promise((<span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) =&gt; {
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">timestamp</span> <span style="color:#f92672">=</span> (<span style="color:#66d9ef">new</span> Date()).<span style="color:#a6e22e">getTime</span>();
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">params</span>    <span style="color:#f92672">=</span> {
+      <span style="color:#a6e22e">RoleArn</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">role_arn</span>,
+      <span style="color:#a6e22e">RoleSessionName</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`aws-cost-monitoring-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">timestamp</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>,
+    };
+    <span style="color:#a6e22e">sts</span>.<span style="color:#a6e22e">assumeRole</span>(<span style="color:#a6e22e">params</span>, (<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">data</span>) =&gt; {
+      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">err</span>) <span style="color:#a6e22e">reject</span>(<span style="color:#a6e22e">err</span>);
+      <span style="color:#66d9ef">else</span> {
+        <span style="color:#a6e22e">resolve</span>({
+          <span style="color:#a6e22e">accessKeyId</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Credentials</span>.<span style="color:#a6e22e">AccessKeyId</span>,
+          <span style="color:#a6e22e">secretAccessKey</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Credentials</span>.<span style="color:#a6e22e">SecretAccessKey</span>,
+          <span style="color:#a6e22e">sessionToken</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Credentials</span>.<span style="color:#a6e22e">SessionToken</span>,
+        });
+      }
+    });
+  });
+}
+
+<span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> {
+    <span style="color:#a6e22e">getCrossAccountCredentials</span>
+}
+</code></pre></div><ul>
+<li>index.js</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">/***
+</span><span style="color:#75715e"> * Enviroment Variables
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">target_date</span>   <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">TARGET_DATE</span>;   <span style="color:#75715e">// optional
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">role_arn</span>      <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">ROLE_ARN</span>;      <span style="color:#75715e">// required
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">slack_webhook</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">SLACK_WEBHOOK</span>; <span style="color:#75715e">// required
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">/***
+</span><span style="color:#75715e"> * Load Modules
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AWS</span>    <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;aws-sdk&#39;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">moment</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;moment&#39;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">helper_func</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;./helper-functions&#39;</span>);
+<span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">IncomingWebhook</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@slack/webhook&#39;</span>);
+
+<span style="color:#75715e">/***
+</span><span style="color:#75715e"> * Global Variables
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">webhook</span>   <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">IncomingWebhook</span>(<span style="color:#a6e22e">slack_webhook</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">today</span>     <span style="color:#f92672">=</span> <span style="color:#a6e22e">moment</span>(<span style="color:#a6e22e">target_date</span>).<span style="color:#a6e22e">utc</span>().<span style="color:#a6e22e">startOf</span>(<span style="color:#e6db74">&#39;day&#39;</span>)
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tomorrow</span>  <span style="color:#f92672">=</span> <span style="color:#a6e22e">moment</span>(<span style="color:#a6e22e">today</span>).<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;days&#39;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">formatted_today</span>    <span style="color:#f92672">=</span> <span style="color:#a6e22e">today</span>.<span style="color:#a6e22e">toISOString</span>();
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">formatted_tomorrow</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">tomorrow</span>.<span style="color:#a6e22e">toISOString</span>();
+
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">formatted_today</span>, <span style="color:#a6e22e">formatted_tomorrow</span>);
+
+<span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">handle</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">event</span>) {
+    <span style="color:#75715e">// What to do?
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 1. Switch role to a specific IAM role via STS
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Cloudwatch data is only in the us-east-1 region.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">accessparams</span>     <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">helper_func</span>.<span style="color:#a6e22e">getCrossAccountCredentials</span>(<span style="color:#a6e22e">role_arn</span>);
+    <span style="color:#a6e22e">accessparams</span>[<span style="color:#e6db74">&#34;region&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;us-east-1&#39;</span>;
+
+    <span style="color:#75715e">// Assuming the new role will return temporary credentials
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudwatch_client</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">CloudWatch</span>(<span style="color:#a6e22e">accessparams</span>);
+
+    <span style="color:#75715e">// 2. Pull Cost Data from Cloudwatch Metrics
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Define parameters
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cw_params</span> <span style="color:#f92672">=</span> {
+      <span style="color:#a6e22e">MetricDataQueries</span><span style="color:#f92672">:</span> [
+        {
+          <span style="color:#a6e22e">Id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;monitoringAwsCostPerDay&#39;</span>,
+          <span style="color:#a6e22e">MetricStat</span><span style="color:#f92672">:</span> {
+            <span style="color:#a6e22e">Metric</span><span style="color:#f92672">:</span> {
+              <span style="color:#a6e22e">Namespace</span>  <span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;AWS/Billing&#39;</span>,
+              <span style="color:#a6e22e">MetricName</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;EstimatedCharges&#39;</span>,
+              <span style="color:#a6e22e">Dimensions</span> <span style="color:#f92672">:</span> [
+                {
+                  <span style="color:#a6e22e">Name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Currency&#39;</span>,
+                  <span style="color:#a6e22e">Value</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;USD&#39;</span>
+                }
+              ]
+            },
+            <span style="color:#a6e22e">Period</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">86400</span>,
+            <span style="color:#a6e22e">Stat</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Maximum&#39;</span>,
+          }
+        },
+      ],
+      <span style="color:#a6e22e">StartTime</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">formatted_today</span>,
+      <span style="color:#a6e22e">EndTime</span>   <span style="color:#f92672">:</span> <span style="color:#a6e22e">formatted_tomorrow</span>,
+    };
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">metric_data</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">getMericDataFromCloudWatch</span>(<span style="color:#a6e22e">cloudwatch_client</span>, <span style="color:#a6e22e">cw_params</span>);
+
+    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">metric_data</span>) {
+      <span style="color:#75715e">// 3. Formatting for Slack
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">// 4. Send Slack
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">usd_cost</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">metric_data</span>.<span style="color:#a6e22e">MetricDataResults</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">Values</span>[<span style="color:#ae81ff">0</span>];
+
+      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">usd_cost</span>);
+
+      <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">webhook</span>.<span style="color:#a6e22e">send</span>({
+          <span style="color:#a6e22e">text</span>    <span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">formatted_today</span><span style="color:#e6db74">}</span><span style="color:#e6db74">時点の金額は下記の通りです。`</span>,
+          <span style="color:#a6e22e">channel</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#aws-notifications&#34;</span>,
+          <span style="color:#a6e22e">attachments</span><span style="color:#f92672">:</span> [{<span style="color:#e6db74">&#34;text&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`Total Cost: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">usd_cost</span><span style="color:#e6db74">}</span><span style="color:#e6db74">$`</span>}]
+      });
+    }
+
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+}
+
+<span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getMericDataFromCloudWatch</span>(<span style="color:#a6e22e">cloudwatch_client</span>, <span style="color:#a6e22e">cw_params</span>) {
+
+  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Query: &#34;</span>, <span style="color:#a6e22e">cw_params</span>)
+
+  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ret</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#66d9ef">new</span> Promise(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) {
+    <span style="color:#a6e22e">cloudwatch_client</span>.<span style="color:#a6e22e">getMetricData</span>(<span style="color:#a6e22e">cw_params</span>, <span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">result</span>) {
+      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">err</span>) {
+          <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">stack</span>);
+          <span style="color:#a6e22e">reject</span>(<span style="color:#e6db74">&#34;Internal server error.&#34;</span>)
+      } <span style="color:#66d9ef">else</span> {
+          <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">result</span>);
+          <span style="color:#a6e22e">resolve</span>(<span style="color:#a6e22e">result</span>)
+      }})
+  });
+
+  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Ret: &#34;</span>, <span style="color:#a6e22e">ret</span>)
+
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ret</span>
+}
+</code></pre></div><h3 id="手動でアップロードする際の注意">手動でアップロードする際の注意</h3>
+<ul>
+<li>
+<p><code>$ npm install moment</code> で、<a href="https://www.npmjs.com/package/moment"target="_blank">moment</a>をインストール。</p>
+</li>
+<li>
+<p><code>$ npm install @slack/webhook</code> で、<a href="https://www.npmjs.com/package/@slack/webhook"target="_blank">@slack/webhook</a>をインストール。</p>
+</li>
+<li>
+<p>monitoringAwsCost配下のファイル全て(monitoringAwsCostフォルダを除く)を「monitoringAwsCost.zip」ファイルにして直接Lambdaにアップロードする。</p>
+</li>
+<li>
+<p>「1.」のハンドラ名を「index.handle」に変更。(Apexを使うとこれがデフォルトになるみたいです。)
+<span class="image-container"><span class="link" ><a href="/images/2020/03-22-cost-lambda-01.png" 
+        target="_blank"><img class="img" src="/images/2020/03-22-cost-lambda-01.png"/></a></span><span class="caption">
+            <span class="title">上手くアップロードできれば2.のようになります</span class="image-container-caption">
+        </span>
+</span></p>
+</li>
+<li>
+<p>環境変数には下記の通り値を入力</p>
+<ul>
+<li>ROLE_ARN: 次の手順で作成したIAMロールのARNを入力👉<a href="https://amezou.com/posts/2020/03/21/aws-cost-sts/"target="_blank">AWSのコストをSlackに通知する【Lambda - (2)STS編】</a></li>
+<li>SLACK_WEBHOOK: SlackのWebhook URLを入力(参考情報「<a href="https://qiita.com/kshibata101/items/0e13c420080a993c5d16"target="_blank">slackのIncoming webhookが新しくなっていたのでまとめてみた</a>」)</li>
+</ul>
+</li>
+</ul>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-22-cost-lambda-02.png" 
+        target="_blank"><img class="img" src="/images/2020/03-22-cost-lambda-02.png"/></a></span>
+</span>
+<h1 id="コードの解説">コードの解説</h1>
+<pre><code># Lambda内でやりたいこと
+# 1. STSを利用して特定のIAMロールにスイッチ
+# 2. Cloudwatch Metricsでコスト取得
+# 3. 取得したデータをSlackで綺麗に表示されるようフォーマット
+# 4. Slackに通知
+</code></pre><h2 id="momentで今日と昨日の日付を取得">Momentで今日と昨日の日付を取得</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">/***
+</span><span style="color:#75715e"> * Global Variables
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">today</span>     <span style="color:#f92672">=</span> <span style="color:#a6e22e">moment</span>(<span style="color:#a6e22e">target_date</span>).<span style="color:#a6e22e">utc</span>().<span style="color:#a6e22e">startOf</span>(<span style="color:#e6db74">&#39;day&#39;</span>)
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tomorrow</span>  <span style="color:#f92672">=</span> <span style="color:#a6e22e">moment</span>(<span style="color:#a6e22e">today</span>).<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;days&#39;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">formatted_today</span>    <span style="color:#f92672">=</span> <span style="color:#a6e22e">today</span>.<span style="color:#a6e22e">toISOString</span>();
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">formatted_tomorrow</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">tomorrow</span>.<span style="color:#a6e22e">toISOString</span>();
+<span style="color:#75715e">// 2020-03-22T00:00:00.000Z 2020-03-23T00:00:00.000Z
+</span></code></pre></div><blockquote>
+<p>CloudwatchのGetMetricDataでは「StartTime, EndTime」において、ISOStringフォーマット、Unix時間及びDateオブジェクトのみを受け取るようです。これが意外と罠でした。</p>
+</blockquote>
+<h2 id="1-stsを利用して特定のiamロールにスイッチ">1. STSを利用して特定のIAMロールにスイッチ</h2>
+<p><a href="https://stackoverflow.com/a/55315086"target="_blank">using profile that assume role in aws-sdk (AWS JavaScript SDK)</a>でクロスアカウント用のSTSの手法が紹介されてたので採用。もちろん同一アカウント内のSTSにも利用可能です。</p>
+<p>とりあえずこの実装は別のLambdaでも使うかもしれないのでヘルパー機能として別ファイルに定義しています。</p>
+<h2 id="2-cloudwatch-metricsでコスト取得">2. Cloudwatch Metricsでコスト取得</h2>
+<p>公式ドキュメント「<a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudWatch.html#getMetricData-property"target="_blank">AWS Javascript SDK - getMetricData</a>」を見ながら実装しました。Cloudwatchクライアントを作成時に「us-east-1」を必ず指定しましょう。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// 1. Switch role to a specific IAM role via STS
+</span><span style="color:#75715e">// Cloudwatch data is only in the us-east-1 region.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">accessparams</span>     <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">helper_func</span>.<span style="color:#a6e22e">getCrossAccountCredentials</span>(<span style="color:#a6e22e">role_arn</span>);
+<span style="color:#a6e22e">accessparams</span>[<span style="color:#e6db74">&#34;region&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;us-east-1&#39;</span>;
+</code></pre></div><h2 id="3-取得したデータをslackで綺麗に表示されるようフォーマット">3. 取得したデータをSlackで綺麗に表示されるようフォーマット</h2>
+<p>前回の<a href="https://amezou.com/posts/2020/03/22/cli-lambda/"target="_blank">AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】</a>でGet Metric Dataを実行した際には次のようなレスポンスが返ってきてました。</p>
+<ul>
+<li><code>$ aws cloudwatch get-metric-data --cli-input-json file://&lt;your-path-to&gt;/test.json --region us-east-1</code></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;MetricDataResults&#34;</span>: [
+        {
+            <span style="color:#f92672">&#34;Id&#34;</span>: <span style="color:#e6db74">&#34;monitoringAwsCostPerDay&#34;</span>,
+            <span style="color:#f92672">&#34;Label&#34;</span>: <span style="color:#e6db74">&#34;EstimatedCharges&#34;</span>,
+            <span style="color:#f92672">&#34;Timestamps&#34;</span>: [
+                <span style="color:#e6db74">&#34;2020-03-22T00:00:00Z&#34;</span>
+            ],
+            <span style="color:#f92672">&#34;Values&#34;</span>: [
+                <span style="color:#ae81ff">0.64</span>
+            ],
+            <span style="color:#f92672">&#34;StatusCode&#34;</span>: <span style="color:#e6db74">&#34;Complete&#34;</span>
+        }
+    ],
+    <span style="color:#f92672">&#34;Messages&#34;</span>: []
+}
+</code></pre></div><p>Lambdaのレスポンスを見るとほぼ一緒ですね。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">{
+  <span style="color:#a6e22e">ResponseMetadata</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">RequestId</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;54b80e1c-2a05-4128-b47f-819fc5d5daa6&#39;</span> },
+  <span style="color:#a6e22e">MetricDataResults</span><span style="color:#f92672">:</span> [
+    {
+      <span style="color:#a6e22e">Id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;monitoringAwsCostPerDay&#39;</span>,
+      <span style="color:#a6e22e">Label</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;EstimatedCharges&#39;</span>,
+      <span style="color:#a6e22e">Timestamps</span><span style="color:#f92672">:</span> [Array],
+      <span style="color:#a6e22e">Values</span><span style="color:#f92672">:</span> [Array],
+      <span style="color:#a6e22e">StatusCode</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Complete&#39;</span>,
+      <span style="color:#a6e22e">Messages</span><span style="color:#f92672">:</span> []
+    }
+  ],
+  <span style="color:#a6e22e">Messages</span><span style="color:#f92672">:</span> []
+}
+</code></pre></div><p>Slackのフォーマットは「<a href="https://api.slack.com/docs/messages/builder"target="_blank">Message Formatting</a>」で確認できます。難しい表記は要らないので純粋に下記のようなフォーマットにします。</p>
+<pre><code>{
+    &quot;text&quot;: &quot;XXX日の請求金額&quot;,
+    &quot;attachments&quot;: [
+        {
+            &quot;text&quot;: &quot;0.12$&quot;
+        }
+    ]
+}
+</code></pre><h2 id="4-slackに通知">4. Slackに通知</h2>
+<p>Slack送信部分は<a href="https://www.npmjs.com/package/@slack/webhook"target="_blank">@slack/webhook</a>を利用。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">webhook</span>.<span style="color:#a6e22e">send</span>({
+    <span style="color:#a6e22e">text</span>    <span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">formatted_today</span><span style="color:#e6db74">}</span><span style="color:#e6db74">時点の金額は下記の通りです。`</span>,
+    <span style="color:#a6e22e">channel</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#aws-notifications&#34;</span>,
+    <span style="color:#a6e22e">attachments</span><span style="color:#f92672">:</span> [{<span style="color:#e6db74">&#34;text&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`Total Cost: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">usd_cost</span><span style="color:#e6db74">}</span><span style="color:#e6db74">$`</span>}]
+});
+</code></pre></div><p>Webhook URLの取得は「<a href="https://qiita.com/kshibata101/items/0e13c420080a993c5d16"target="_blank">slackのIncoming webhookが新しくなっていたのでまとめてみた</a>」が詳しいです。</p>
+<h2 id="実際に試してみる">実際に試してみる</h2>
+<p>きちんと届いてますね！
+<span class="image-container"><span class="link" ><a href="/images/2020/03-22-cost-lambda-03.png" 
+        target="_blank"><img class="img" src="/images/2020/03-22-cost-lambda-03.png"/></a></span>
+</span></p>
+<p>あとはこれを定期実行させれば良いですね。</p>
+</article>
+
+<section id=related_link>
+<h3>合わせて読む</h3><p></p>
+<ul>
+	
+	<li><a href="/posts/2020/03/22/cli-lambda/">AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】</a></li>
+	
+	<li><a href="/posts/2020/03/21/aws-cost-sts/">AWSのコストをSlackに通知する【Lambda - (2)STS編】</a></li>
+	
+	<li><a href="/posts/2020/03/21/aws-cost/">AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】</a></li>
+	
+</ul>
+</section>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f22%2fcost-lambda%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=AWS%e3%81%ae%e3%82%b3%e3%82%b9%e3%83%88%e3%82%92Slack%e3%81%ab%e9%80%9a%e7%9f%a5%e3%81%99%e3%82%8b%e3%80%90Lambda%20-%20%284%29Lambda%e5%ae%9f%e8%a3%85%e7%b7%a8%e3%80%91｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f22%2fcost-lambda%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/aws/>AWS</a><a class="category" href=/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E6%8A%80%E8%A1%93/>サーバレス技術</a><a class="tag" href=/tags/aws/>aws</a><a class="tag" href=/tags/lambda/>lambda</a><a class="tag" href=/tags/sns/>sns</a><a class="tag" href=/tags/cloudwatch/>cloudwatch</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/03/23/vagrant/"><span class="li">&larr;</span>Vagrantで開発環境を作ろう！</a></p><p><a class="link" href="/posts/2020/03/22/cli-lambda/"><span class="li">&rarr;</span>AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>terraform on サーバレスブログ</title>
+    <link>/tags/terraform/</link>
+    <description>Recent content in terraform on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Sun, 08 Mar 2020 01:53:31 +0100</lastBuildDate>
+    
+        <atom:link href="/tags/terraform/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>クラウドエンジニアはTerraformを使うべし</title>
+      <link>/posts/2020/03/08/terraform/</link>
+      <pubDate>Sun, 08 Mar 2020 01:53:31 +0100</pubDate>
+      
+      <guid>/posts/2020/03/08/terraform/</guid>
+      <description>今回はクラウドエンジニアなら絶対に身に付けるべき「インフラのコード化」というテーマで書きます。 インフラのコード化って？ 今の時代「クラウド」と</description>
+      
+    </item>
+    
+  </channel>
+</rss>
