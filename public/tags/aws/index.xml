@@ -6,10 +6,20 @@
     <description>Recent content in aws on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Sat, 11 Apr 2020 09:21:59 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 13 Apr 2020 09:21:59 +0000</lastBuildDate>
     
         <atom:link href="/tags/aws/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>[CI/CD] Github ActionsとS3を連携させる[developmentブランチ編]</title>
+      <link>/posts/2020/04/13/ci-cd/</link>
+      <pubDate>Mon, 13 Apr 2020 09:21:59 +0000</pubDate>
+      
+      <guid>/posts/2020/04/13/ci-cd/</guid>
+      <description>今回は[CI/CD] Github ActionsとS3を連携させる[プラン編]の続きです。 やりたいことの確認 前回記事よりやりたいことを再度確認します。 差</description>
+      
+    </item>
     
     <item>
       <title>[CI/CD] Github ActionsとS3を連携させる[実装編]</title>
