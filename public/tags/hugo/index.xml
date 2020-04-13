@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>hugo on サーバレスブログ</title>
+    <link>/tags/hugo/</link>
+    <description>Recent content in hugo on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Wed, 18 Mar 2020 23:48:00 +0100</lastBuildDate>
+    
+        <atom:link href="/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>「hugo/notepadium」に「合わせて読む」機能の追加</title>
+      <link>/posts/2020/03/18/see-also/</link>
+      <pubDate>Wed, 18 Mar 2020 23:48:00 +0100</pubDate>
+      
+      <guid>/posts/2020/03/18/see-also/</guid>
+      <description>今回は本サイトでも使用している「notepadium」テーマに「合わせて読む」機能を追加しようと思います。 本記事は「hugo/notepad</description>
+      
+    </item>
+    
+    <item>
+      <title>「hugo/notepadium」にSNSシェアボタンを追加する</title>
+      <link>/posts/2020/03/15/sns-share/</link>
+      <pubDate>Sun, 15 Mar 2020 17:50:41 +0100</pubDate>
+      
+      <guid>/posts/2020/03/15/sns-share/</guid>
+      <description>今回は本サイトでも使用している「notepadium」テーマにSNSシェアボタンを追加しようと思います。 とりあえずTwitter, Faceb</description>
+      
+    </item>
+    
+    <item>
+      <title>「hugo/notepadium」にカスタムCSSとfontawesomeの導入</title>
+      <link>/posts/2020/03/13/custom-css/</link>
+      <pubDate>Fri, 13 Mar 2020 08:47:00 +0100</pubDate>
+      
+      <guid>/posts/2020/03/13/custom-css/</guid>
+      <description>今回はhugoのテーマ「notepadium」にカスタムCSSとfontawesomeを導入します。 FontawesomeはCSSだけで次の</description>
+      
+    </item>
+    
+    <item>
+      <title>HugoのTheme(テーマ)を管理する方法</title>
+      <link>/posts/2020/03/12/manage-theme/</link>
+      <pubDate>Thu, 12 Mar 2020 13:10:02 +0100</pubDate>
+      
+      <guid>/posts/2020/03/12/manage-theme/</guid>
+      <description>Hugoでは色々なテーマを簡単に利用することが可能です。配られたテーマをそのまま使う分には問題ないのですが、自分で何か変更したい場合、どのよ</description>
+      
+    </item>
+    
+    <item>
+      <title>HugoでTwitterカード画像を自動生成する方法</title>
+      <link>/posts/2020/03/11/sns-image/</link>
+      <pubDate>Wed, 11 Mar 2020 13:55:46 +0100</pubDate>
+      
+      <guid>/posts/2020/03/11/sns-image/</guid>
+      <description>今回やりたいこと Hugoで記事ごとにTwitterカードを生成するのが面倒なので自動化したい。 参考にしたもの twitterカード画像自動生成</description>
+      
+    </item>
+    
+    <item>
+      <title>HugoでTwitterカードを表示させる方法</title>
+      <link>/posts/2020/03/10/twitter-card/</link>
+      <pubDate>Tue, 10 Mar 2020 18:08:02 +0100</pubDate>
+      
+      <guid>/posts/2020/03/10/twitter-card/</guid>
+      <description>今回はHugoでTwitterカードを表示させる方法について書きます。 別のテーマでも同じ原理でカスタマイズ可能なのでぜひ試してみて下さい。 本</description>
+      
+    </item>
+    
+    <item>
+      <title>【保存版】爆速！サーバレスブログの作り方【Hugo &#43; AWS(S3,Route53,Cloudfront)】</title>
+      <link>/posts/2020/03/07/serverless-blog/</link>
+      <pubDate>Sat, 07 Mar 2020 10:17:48 +0100</pubDate>
+      
+      <guid>/posts/2020/03/07/serverless-blog/</guid>
+      <description>本サイトはサーバレスで構成されています。 ブログに使用しているサービスは「Route53, ACM, Cloudfront, S3」です。 ユーザがアクセスする際に使われるドメ</description>
+      
+    </item>
+    
+  </channel>
+</rss>

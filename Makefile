@@ -23,11 +23,11 @@ deploy: ## Deploy public folder
 	@echo "== Deploying"
 	@find ./public -type f -mtime +14 -exec rm -f {} \;
 	@sh create_images.sh
-	@hugo -t hugo-notepadium
+	@hugo -t hugo-notepadium-custom
 
 server: ## Run a server locally
 	@echo "== Run Hugo Server locally"
-	@hugo server -D -t hugo-notepadium
+	@hugo server --bind=0.0.0.0 --baseURL=http://127.0.0.1:1313 -D -t hugo-notepadium-custom
 
 upload: validate-upload ## Upload Content to S3 bucket
 	@echo "== Uploading"

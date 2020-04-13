@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>HugoでTwitterカードを表示させる方法&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.e0e9a90775a362ffb0a0e38b1d12c95c7c92a12c3dbe4525162fae73da0c078303e0a523689197b84fdbcb5a506b0585.css" integrity="sha384-4OmpB3WjYv&#43;woOOLHRLJXHySoSw9vkUlFi&#43;uc9oMB4MD4KUjaJGXuE/by1pQawWF">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="HugoでTwitterカードを表示させる方法">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/03/10/twitter-card/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="HugoでTwitterカードを表示させる方法">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-03-10-twitter-card.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-03-10-twitter-card.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">HugoでTwitterカードを表示させる方法</h1><p class="article date">2020-03-10</p></section><article class="article markdown-body"><p>今回はHugoでTwitterカードを表示させる方法について書きます。</p>
+<p>別のテーマでも同じ原理でカスタマイズ可能なのでぜひ試してみて下さい。</p>
+<p>本記事では「<a href="https://themes.gohugo.io/hugo-notepadium/"target="_blank">hugo-notepadium</a>」のテーマを元に解説していきます。</p>
+<h1 id="テーマをカスタマイズ">テーマをカスタマイズ</h1>
+<ul>
+<li>layouts/partials/head-extra.html</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{{- partial <span style="color:#e6db74">&#34;sns-card.html&#34;</span> . -}}
+</code></pre></div><ul>
+<li>layouts/partials/sns-card.html</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#75715e">&lt;!-- Enable SNS card--&gt;</span>
+&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:site_name&#34;</span>           <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ .Site.Title }}&#34;</span>&gt;
+&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:title&#34;</span>               <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ .Title }}&#34;</span>&gt;
+&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:url&#34;</span>                 <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ .Permalink | absURL }}&#34;</span>&gt;
+&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:type&#34;</span>                <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ if .IsPage }}article{{ else }}website{{ end }}&#34;</span>&gt;
+&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;twitter:card&#34;</span>               <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;summary_large_image&#34;</span>&gt;
+&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;twitter:title&#34;</span>          <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ .Title }}&#34;</span>&gt;
+{{ if .Params.description }}
+    {{ with .Params.description }}
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:description&#34;</span>         <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ . }}&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;twitter:description&#34;</span>    <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ . }}&#34;</span>&gt;
+    {{ end }}
+{{ else }}
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:description&#34;</span>         <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ .Site.Params.slogan }}&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;twitter:description&#34;</span>    <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ .Site.Params.slogan }}&#34;</span>&gt;
+{{ end }}
+{{ if .Params.meta_image }}
+    {{ with .Params.meta_image }}
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:image&#34;</span>       <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ . | absURL }}&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:image:url&#34;</span>   <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ . | absURL }}&#34;</span>&gt;
+    {{ end }}
+{{ else }}
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:image&#34;</span>       <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ .Site.Params.og_image | absURL }}&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">property</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;og:image:url&#34;</span>   <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ .Site.Params.og_image | absURL }}&#34;</span>&gt;
+{{ end }}
+</code></pre></div><h2 id="twitterカードの解説">Twitterカードの解説</h2>
+<p>Twitterカードとは何か？下記の記事がわかりやすくてオススメです。</p>
+<p><a href="https://saruwakakun.com/html-css/reference/twitter-card"target="_blank">【2020年版】Twitterカードとは？使い方と設定方法まとめ</a></p>
+<ul>
+<li>&ldquo;og&quot;タグはTwitterやFacebookなど幅広いSNSで使用されるタグです。&ldquo;twitter&quot;タグはTwitterのみで使用されます。</li>
+<li><code>{{ &quot;相対パス&quot; | absURL }}</code>を使うと「https://amezou.com/相対パス」のようなURLを自動で作ってくれます。(参考: <a href="https://gohugo.io/functions/absurl/"target="_blank">hugo functions-absURL</a>)</li>
+<li><code>{{ with .Params.meta_image }}</code>で各記事内の「meta_image」の値を「.Params.meta_image」と繰り返さずに何度も使えます。</li>
+<li>「.Site.Params」は後述する「<code>config.toml</code>」ファイルの値を参照します。</li>
+</ul>
+<h1 id="記事の作成">記事の作成</h1>
+<h2 id="デフォルト設定">デフォルト設定</h2>
+<ul>
+<li>config.toml</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">params</span>]
+<span style="color:#a6e22e">og_image</span> = <span style="color:#e6db74">&#34;/thumbnails/default.png&#34;</span>
+</code></pre></div><p>「og_image」は各記事内でTwitterカードの画像情報がない場合にデフォルトで表示される画像です。</p>
+<h2 id="デフォルトカード画像">デフォルトカード画像</h2>
+<p>デフォルトの画像はこんな感じ。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-10-twitter-card-01.png" 
+        target="_blank"><img class="img" src="/images/2020/03-10-twitter-card-01.png" width="400"/></a></span><span class="caption">
+            <span class="title">Twitterカードの例</span class="image-container-caption">
+        </span>
+</span>
+<h2 id="記事内で指定">記事内で指定</h2>
+<ul>
+<li><a href="https://amezousan.com/posts/2020/03/10/how-to-enable-twitter-card-in-a-hugo-theme/"target="_blank">how-to-enable-twitter-card-in-a-hugo-theme.md</a></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">title </span>: <span style="color:#e6db74">&#34;クラウドエンジニアはTerraformを使うべし&#34;</span>
+<span style="color:#66d9ef">date  </span>: <span style="color:#e6db74">2020-03-08T01:53:31</span><span style="color:#ae81ff">+01</span>:<span style="color:#ae81ff">00</span>
+<span style="color:#66d9ef">description</span>: <span style="color:#e6db74">&#34;説明&#34;</span>
+<span style="color:#66d9ef">draft </span>: <span style="color:#66d9ef">false</span>
+<span style="color:#66d9ef">tags  </span>: [
+    <span style="color:#e6db74">&#34;blog&#34;</span>,
+    <span style="color:#e6db74">&#34;terraform&#34;</span>,
+    <span style="color:#e6db74">&#34;serverless&#34;</span>,
+]
+<span style="color:#66d9ef">categories</span>: [
+    <span style="color:#e6db74">&#34;雑記&#34;</span>,
+    <span style="color:#e6db74">&#34;エンジニア思考&#34;</span>
+]
+<span style="color:#66d9ef">meta_image</span>: <span style="color:#e6db74">&#34;/thumbnails/2020-03-08-cloud-engineer-must-use-terraform.png&#34;</span>
+</code></pre></div><p>画像を指定するのこのような感じに。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-10-twitter-card-02.png" 
+        target="_blank"><img class="img" src="/images/2020/03-10-twitter-card-02.png" width="400"/></a></span><span class="caption">
+            <span class="title">Twitterカードの例</span class="image-container-caption">
+        </span>
+</span>
+<h1 id="コンテンツの配置">コンテンツの配置</h1>
+<p>コンテンツは「<code>static/thumbnails/</code>」フォルダに入れます。</p>
+<pre><code>static
+└── thumbnails
+    ├── 2020-03-08-cloud-engineer-must-use-terraform.png
+    ├── 2020-03-10-how-to-enable-twitter-card-in-a-hugo-theme.png
+    └── default.png
+</code></pre><h1 id="最後に">最後に</h1>
+<p>Hugoのカスタマイズは少し癖がありますが、基本的にはHTMLベースなので理解しやすいですね。</p>
+<p>使えば使うほど、自分のオリジナリティが出る良いフレームワークだと思います。これからもどんどんカスタマイズしていきます。</p>
+</article>
+
+<section id=related_link>
+<h3>合わせて読む</h3><p></p>
+<ul>
+	
+	<li><a href="/posts/2020/03/07/serverless-blog/">【保存版】爆速！サーバレスブログの作り方【Hugo &#43; AWS(S3,Route53,Cloudfront)】</a></li>
+	
+</ul>
+</section>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f10%2ftwitter-card%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=Hugo%e3%81%a7Twitter%e3%82%ab%e3%83%bc%e3%83%89%e3%82%92%e8%a1%a8%e7%a4%ba%e3%81%95%e3%81%9b%e3%82%8b%e6%96%b9%e6%b3%95｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f10%2ftwitter-card%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/>サーバレスブログ</a><a class="tag" href=/tags/hugo/>hugo</a><a class="tag" href=/tags/hugo-custom/>hugo-custom</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/03/11/sns-image/"><span class="li">&larr;</span>HugoでTwitterカード画像を自動生成する方法</a></p><p><a class="link" href="/posts/2020/03/08/terraform/"><span class="li">&rarr;</span>クラウドエンジニアはTerraformを使うべし</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

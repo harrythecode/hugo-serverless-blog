@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>「hugo/notepadium」にカスタムCSSとfontawesomeの導入&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.e0e9a90775a362ffb0a0e38b1d12c95c7c92a12c3dbe4525162fae73da0c078303e0a523689197b84fdbcb5a506b0585.css" integrity="sha384-4OmpB3WjYv&#43;woOOLHRLJXHySoSw9vkUlFi&#43;uc9oMB4MD4KUjaJGXuE/by1pQawWF">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="「hugo/notepadium」にカスタムCSSとfontawesomeの導入">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/03/13/custom-css/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="「hugo/notepadium」にカスタムCSSとfontawesomeの導入">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-03-12-custom-css.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-03-12-custom-css.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">「hugo/notepadium」にカスタムCSSとfontawesomeの導入</h1><p class="article date">2020-03-13</p></section><article class="article markdown-body"><p>今回はhugoのテーマ「<a href="https://themes.gohugo.io/hugo-notepadium/"target="_blank">notepadium</a>」にカスタムCSSとfontawesomeを導入します。</p>
+<p>FontawesomeはCSSだけで次のようなアイコンを使うことができます。非常に使い勝手が良く、色んなアイコンが揃っているのでオススメです。</p>
+<p><i class="fab fa-github fa-3x"></i>
+<i class="fab fa-twitter fa-3x"></i>
+<i class="fab fa-youtube fa-3x"></i></p>
+<ul>
+<li>上記アイコンのHTMLコード</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">i</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;fab fa-github fa-3x&#34;</span>&gt;&lt;/<span style="color:#f92672">i</span>&gt;
+&lt;<span style="color:#f92672">i</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;fab fa-twitter fa-3x&#34;</span>&gt;&lt;/<span style="color:#f92672">i</span>&gt;
+&lt;<span style="color:#f92672">i</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;fab fa-youtube fa-3x&#34;</span>&gt;&lt;/<span style="color:#f92672">i</span>&gt;
+</code></pre></div><h1 id="今回変更する箇所">今回変更する箇所</h1>
+<pre><code>├── static
+│   ├── custom-css (新規作成)
+│   └── webfonts   (新規作成)
+├── config.toml
+└── themes
+    └── hugo-notepadium
+</code></pre><h2 id="カスタムcssの導入">カスタムCSSの導入</h2>
+<ul>
+<li>config.tomlに下記を追加(もちろん名前、パスは自由)</li>
+</ul>
+<pre><code>[params.assets]
+css = [&quot;css/font.css&quot;]
+</code></pre><p>フォルダ「themes/hugo-notepadium/assets/」の配下に「css」フォルダを作り「font.css」ファイルを作成します。</p>
+<ul>
+<li>themes/hugo-notepadium/assets/css/font.css</li>
+</ul>
+<pre><code>.article-container p { font-size: 18px; line-height: 2 ; padding:16px 0; margin: 0;}
+h1,h2,h3,h4,h5,h6 {padding-top: 16px;}
+</code></pre><h3 id="変更前">変更前</h3>
+<p>少し文字の間隔が狭いですよね。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-13-custom-css-01.png" 
+        target="_blank"><img class="img" src="/images/2020/03-13-custom-css-01.png"/></a></span>
+</span>
+<h3 id="変更後">変更後</h3>
+<p>これで少し読みやすくなりました！</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-13-custom-css-02.png" 
+        target="_blank"><img class="img" src="/images/2020/03-13-custom-css-02.png"/></a></span>
+</span>
+<h2 id="fontawesomeの導入">Fontawesomeの導入</h2>
+<h3 id="ファイルのダウンロード">ファイルのダウンロード</h3>
+<p><a href="https://fontawesome.com/download"target="_blank">Fontawesome - Download</a>にアクセスして「Free for Web」ボタンをクリック。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-13-custom-css-03.png" 
+        target="_blank"><img class="img" src="/images/2020/03-13-custom-css-03.png"/></a></span>
+</span>
+<p>ダウンロードしたzipファイルを解凍すると次のようなフォルダ構成になってます。</p>
+<pre><code>fontawesome-free-5.12.1-web
+├── css
+│   ├── all.css
+│   └── all.min.css
+├── js
+├── less
+├── metadata
+├── scss
+├── sprites
+├── svgs
+│   ├── brands
+│   ├── regular
+│   └── solid
+└── webfonts
+</code></pre><h3 id="ファイルの展開">ファイルの展開</h3>
+<p>「css/all.min.css」ファイルをHugoディレクトリ「static」の配下に置きます。この際「custom-css」フォルダを作り「fontawesome-all.min.css」として入れましょう。</p>
+<pre><code>static/custom-css/
+└── fontawesome-all.min.css
+</code></pre><blockquote>
+<p>all.min.cssとall.cssは同じコンテンツですがファイルサイズが異なります。
+少しでもファイルの読み込み速度を上げるため「min」版を選んでいます。</p>
+</blockquote>
+<p>「webfonts」フォルダをそのまま「static」フォルダの配下にコピーしましょう。</p>
+<pre><code>static/
+├── custom-css
+└── webfonts
+</code></pre><h3 id="テーマのヘッダを変更">テーマのヘッダを変更</h3>
+<p>「<code>&lt;link rel=&quot;stylesheet&quot; href=&quot;{{ &quot;custom-css/fontawesome-all.min.css&quot; | absURL }}&quot;&gt;</code>」をmetaタグの下に追加。</p>
+<ul>
+<li>themes/hugo-notepadium/layouts/partials/head.html</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;supported-color-schemes&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;light dark&#34;</span>&gt;
+&lt;<span style="color:#f92672">link</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stylesheet&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{{ &#34;</span><span style="color:#a6e22e">custom-css</span><span style="color:#960050;background-color:#1e0010">/</span><span style="color:#a6e22e">fontawesome-all</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">min</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">css</span><span style="color:#960050;background-color:#1e0010">&#34;</span> <span style="color:#960050;background-color:#1e0010">|</span> <span style="color:#a6e22e">absURL</span> <span style="color:#960050;background-color:#1e0010">}}&#34;</span>&gt;
+</code></pre></div><p>後は「<code>hugo</code>」コマンドを実行するだけで自動的にコンテンツが生成されます。</p>
+</article>
+
+<section id=related_link>
+<h3>合わせて読む</h3><p></p>
+<ul>
+	
+	<li><a href="/posts/2020/03/12/manage-theme/">HugoのTheme(テーマ)を管理する方法</a></li>
+	
+	<li><a href="/posts/2020/03/11/sns-image/">HugoでTwitterカード画像を自動生成する方法</a></li>
+	
+	<li><a href="/posts/2020/03/10/twitter-card/">HugoでTwitterカードを表示させる方法</a></li>
+	
+</ul>
+</section>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f13%2fcustom-css%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=%e3%80%8chugo%2fnotepadium%e3%80%8d%e3%81%ab%e3%82%ab%e3%82%b9%e3%82%bf%e3%83%a0CSS%e3%81%a8fontawesome%e3%81%ae%e5%b0%8e%e5%85%a5｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f13%2fcustom-css%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/>サーバレスブログ</a><a class="tag" href=/tags/hugo/>hugo</a><a class="tag" href=/tags/hugo-custom/>hugo-custom</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/03/15/sns-share/"><span class="li">&larr;</span>「hugo/notepadium」にSNSシェアボタンを追加する</a></p><p><a class="link" href="/posts/2020/03/12/manage-theme/"><span class="li">&rarr;</span>HugoのTheme(テーマ)を管理する方法</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>
