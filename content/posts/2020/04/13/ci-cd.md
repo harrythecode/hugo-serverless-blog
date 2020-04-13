@@ -117,4 +117,4 @@ jobs:
 - [Push to origin from GitHub action](https://stackoverflow.com/questions/57921401/push-to-origin-from-github-action/58393457#58393457)
 - [コミットメールアドレスを設定する](https://help.github.com/ja/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address)
 
-次は
+次は作成したものをmasterブランチへマージし、その際にaws s3 syncコマンドを使ってウェブサイトと同期させていきます。
