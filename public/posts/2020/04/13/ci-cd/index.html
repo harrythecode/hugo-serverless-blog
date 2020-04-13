@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>[CI/CD] Github ActionsとS3を連携させる[developmentブランチ編]&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.eeb34cdc9585c78a18c67ded84862021d4debb2514af02df2c00e4526a920d92b5182f70b67d9c75a35111653afc5932.css" integrity="sha384-7rNM3JWFx4oYxn3thIYgIdTeuyUUrwLfLADkUmqSDZK1GC9wtn2cdaNREWU6/Fky"><body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">[CI/CD] Github ActionsとS3を連携させる[developmentブランチ編]</h1><p class="article date">2020-04-13</p></section><article class="article markdown-body"><p>今回は<a href="https://amezou.com/posts/2020/04/05/github-actions/"target="_blank">[CI/CD] Github ActionsとS3を連携させる[プラン編]</a>の続きです。</p>
+<h1 id="やりたいことの確認">やりたいことの確認</h1>
+<p>前回記事よりやりたいことを再度確認します。</p>
+<blockquote>
+<ol>
+<li>差分があるものを更新する</li>
+<li>githubに存在しない古いファイルは消す</li>
+<li>記事生成・アップロードを自動化させる</li>
+</ol>
+</blockquote>
+<p>今回は下記のようなgit flowを用いてCI/CD化していきます。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/04-13-ci-cd-01.png" 
+        target="_blank"><img class="img" src="/images/2020/04-13-ci-cd-01.png"/></a></span>
+</span>
+<ol>
+<li>(手動)ユーザは作成した記事(Markdownファイル)をdevelopmentブランチで管理する。</li>
+<li>(自動)自動生成されるpublicフォルダ及びTwitterカード画像は変更差分が自動でdevelopmentブランチ上にgit pushされ、管理される。</li>
+<li>(手動)ユーザがdevelopmentの記事を確認後、手動でmasterブランチへマージする。</li>
+<li>(自動)マージされたファイルなどは全てブログへアップロードされる。</li>
+</ol>
+<p>どの製品もそうですが何もテストせずにいきなり本番環境へアップロードするのだけはあり得ません。少なからずテスト環境で自動及び手動のテストを行った上で本番へデプロイします。</p>
+<p>テストの代わりにmergeする際に目視確認する手順を踏むようにしています。こうすることでどんな変更があるかを把握した上でデプロイすることが可能です。</p>
+<h2 id="どんな選択肢があるのか">どんな選択肢があるのか</h2>
+<p>ブログへデプロイする方法は次の通りが考えられます。</p>
+<ul>
+<li>gitコマンドを使って変更分だけをincludeして更新</li>
+<li>AWS S3コマンドのsize onlyオプションを利用</li>
+</ul>
+<h3 id="gitコマンドを使って変更分だけをincludeして更新">gitコマンドを使って変更分だけをincludeして更新</h3>
+<p>記事は下記が参考になります</p>
+<ul>
+<li><a href="https://www.lambrospetrou.com/articles/aws-s3-sync-git-status/"target="_blank">AWS S3 sync - only modified files, using git status</a></li>
+</ul>
+<p>やってることは全ての変更を除外し、 gitコマンドで差分があるものだけをincludeするだけ。これの欠点としては、publicフォルダもgithub上で管理しないといけないこと。</p>
+<p>この方法 + publicフォルダを自動生成するやり方がが恐らくベストプラクティスのような気がします。ただ、実装にも時間が掛かるので別の機会に取り扱うことにします。</p>
+<h3 id="aws-s3コマンドのsize-onlyオプションを利用">AWS S3コマンドのsize onlyオプションを利用</h3>
+<p><code>aws s3 sync help</code>コマンドを叩くとどんなオプションがあるのかを調べることができます。</p>
+<p>そしてこのコマンドでは次の2つでしかファイルの変更を知り得ません。</p>
+<ul>
+<li>最終更新時間</li>
+<li>ファイルサイズ</li>
+</ul>
+<p>Hugoの記事作成をすると毎回既存の記事もファイルの更新日が変更されるため、最終更新時間での変更は古い変更のない記事までもアップロードすることになってしまいます。</p>
+<p>なので今回はファイルサイズの変更がある場合のみ、S3にアップロードする仕組みとします。</p>
+<p>ここで1つ注意点があり、ファイルサイズが全く変わらない変更は反映されません。ただ実際にそういった場面はかなり少ないと思われるので無視します。</p>
+<h1 id="すること手順">すること手順</h1>
+<p>developmentブランチ上では次の２点を行います。</p>
+<ol>
+<li>Hugo及び画像生成コマンドを実行</li>
+<li>成果物をgithub上にアップロード</li>
+</ol>
+<p>ひとまずdevelopmentブランチ上でテストをしながら作成していきます。</p>
+<h2 id="1-hugo及び画像生成コマンドを実行">1. Hugo及び画像生成コマンドを実行</h2>
+<ul>
+<li>main.yml</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">name</span>: development
+
+<span style="color:#66d9ef">on</span>:
+  <span style="color:#66d9ef">push</span>:
+    <span style="color:#66d9ef">branches</span>: [ development ]
+
+<span style="color:#66d9ef">jobs</span>:
+  <span style="color:#66d9ef">deploy</span>:
+    <span style="color:#66d9ef">name</span>: Create Hugo contents &amp; Push to development branch
+    <span style="color:#66d9ef">runs-on</span>: ubuntu-latest
+    <span style="color:#66d9ef">strategy</span>:
+      <span style="color:#66d9ef">matrix</span>:
+        <span style="color:#66d9ef">python</span>: [<span style="color:#ae81ff">3.6</span>]
+        
+    <span style="color:#66d9ef">steps</span>:
+    <span style="color:#75715e"># Githubレポジトリのファイルにアクセスする用</span>
+    - <span style="color:#66d9ef">name</span>: Checkout
+      <span style="color:#66d9ef">uses</span>: actions/checkout@v2
+      <span style="color:#66d9ef">with</span>:
+          <span style="color:#66d9ef">submodules</span>: <span style="color:#66d9ef">true</span>  <span style="color:#75715e"># Fetch Hugo themes</span>
+    <span style="color:#75715e"># Hugoのインストール</span>
+    - <span style="color:#66d9ef">name</span>: Setup Hugo
+      <span style="color:#66d9ef">uses</span>: peaceiris/actions-hugo@v2
+      <span style="color:#66d9ef">with</span>:
+        <span style="color:#66d9ef">hugo-version</span>: <span style="color:#e6db74">&#39;0.68.3&#39;</span>
+    <span style="color:#75715e"># Make deploy用に先にpublicフォルダを生成</span>
+    - <span style="color:#66d9ef">name</span>: Deploy hugo
+      <span style="color:#66d9ef">run</span>: hugo
+    - <span style="color:#66d9ef">name</span>: Setup Python
+      <span style="color:#66d9ef">uses</span>: actions/setup-python@v1
+      <span style="color:#66d9ef">with</span>:
+        <span style="color:#66d9ef">python-version</span>: ${{ matrix.python }}
+    <span style="color:#75715e"># 自動画像生成に必要なライブラリ郡</span>
+    - <span style="color:#66d9ef">name</span>: Install pillow via pip
+      <span style="color:#66d9ef">run</span>: pip install Pillow==<span style="color:#ae81ff">7.0.0</span>
+    - <span style="color:#66d9ef">name</span>: Install pyyaml via pip
+      <span style="color:#66d9ef">run</span>: pip install pyyaml==<span style="color:#ae81ff">5.3.1</span>
+    <span style="color:#75715e"># Makefileのdeployを実行</span>
+    - <span style="color:#66d9ef">name</span>: Make deploy
+      <span style="color:#66d9ef">run</span>: make deploy
+</code></pre></div><p>実際にデプロイされてますね。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/04-13-ci-cd-02.png" 
+        target="_blank"><img class="img" src="/images/2020/04-13-ci-cd-02.png"/></a></span>
+</span>
+<h3 id="参考にしたサイト">参考にしたサイト</h3>
+<ul>
+<li>
+<p><a href="https://github.com/peaceiris/actions-hugo"target="_blank">Github - peaceiris/actions-hugo</a></p>
+</li>
+<li>
+<p><a href="https://help.github.com/ja/actions/language-and-framework-guides/using-python-with-github-actions"target="_blank">GitHub ActionsでのPythonの利用</a></p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/57921401/push-to-origin-from-github-action/58393457#58393457"target="_blank">Push to origin from GitHub action</a></p>
+</li>
+</ul>
+<h2 id="2-成果物をgithub上にアップロード">2. 成果物をgithub上にアップロード</h2>
+<h2 id="3-aws-s3コマンドでウェブサイトと同期">3. AWS S3コマンドでウェブサイトと同期</h2>
+</article><section class="article labels"><a class="category" href=/categories/aws/>AWS</a><a class="category" href=/categories/ci/cd/>CI/CD</a><a class="category" href=/categories/devops/>DevOps</a><a class="tag" href=/tags/aws/>aws</a><a class="tag" href=/tags/s3/>s3</a><a class="tag" href=/tags/github/>github</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/04/11/ci-cd/"><span class="li">&rarr;</span>[CI/CD] Github ActionsとS3を連携させる[実装編]</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>
