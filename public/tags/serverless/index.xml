@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>serverless on サーバレスブログ</title>
+    <link>/tags/serverless/</link>
+    <description>Recent content in serverless on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Sun, 08 Mar 2020 01:53:31 +0100</lastBuildDate>
+    
+        <atom:link href="/tags/serverless/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>クラウドエンジニアはTerraformを使うべし</title>
+      <link>/posts/2020/03/08/terraform/</link>
+      <pubDate>Sun, 08 Mar 2020 01:53:31 +0100</pubDate>
+      
+      <guid>/posts/2020/03/08/terraform/</guid>
+      <description>今回はクラウドエンジニアなら絶対に身に付けるべき「インフラのコード化」というテーマで書きます。 インフラのコード化って？ 今の時代「クラウド」と</description>
+      
+    </item>
+    
+    <item>
+      <title>【保存版】爆速！サーバレスブログの作り方【Hugo &#43; AWS(S3,Route53,Cloudfront)】</title>
+      <link>/posts/2020/03/07/serverless-blog/</link>
+      <pubDate>Sat, 07 Mar 2020 10:17:48 +0100</pubDate>
+      
+      <guid>/posts/2020/03/07/serverless-blog/</guid>
+      <description>本サイトはサーバレスで構成されています。 ブログに使用しているサービスは「Route53, ACM, Cloudfront, S3」です。 ユーザがアクセスする際に使われるドメ</description>
+      
+    </item>
+    
+  </channel>
+</rss>

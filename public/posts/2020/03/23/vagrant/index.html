@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>Vagrantで開発環境を作ろう！&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.e0e9a90775a362ffb0a0e38b1d12c95c7c92a12c3dbe4525162fae73da0c078303e0a523689197b84fdbcb5a506b0585.css" integrity="sha384-4OmpB3WjYv&#43;woOOLHRLJXHySoSw9vkUlFi&#43;uc9oMB4MD4KUjaJGXuE/by1pQawWF">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="Vagrantで開発環境を作ろう！">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/03/23/vagrant/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="Vagrantで開発環境を作ろう！">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-03-23-vagrant.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-03-23-vagrant.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Vagrantで開発環境を作ろう！</h1><p class="article date">2020-03-23</p></section><article class="article markdown-body"><p>今回はVagrantで本サーバレスブログ向けの開発環境を作ろうと思います。</p>
+<p>Vagrantを知らない人向けの簡単な説明ですが、これは「自分のパソコンに仮想のパソコンを立ち上げる」ものだと考えてください。</p>
+<p>自分のメインのパソコンと違って、間違ったソフトウェア(Rubyなど)バージョンをインストールしても、最初から作り直すことができます。</p>
+<p>つまり初学者がハマりやすい「環境・バージョンの罠」を回避することが可能です。</p>
+<p>今回作成した成果物はすべてGithub「<a href="https://github.com/amezousan/vagrant-dev"target="_blank">amezousan/vagrant-dev</a>」で確認できます。</p>
+<h1 id="vagrantの導入">Vagrantの導入</h1>
+<h2 id="検証環境">検証環境</h2>
+<p>今回使用するOS・ソフトウェアのバージョンは次の通りです。</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>macOS Catalina</td>
+<td>10.15.3(CPU: Dual-Core i5, Memory: 16GB)</td>
+</tr>
+<tr>
+<td>Vagrant</td>
+<td>2.2.4</td>
+</tr>
+<tr>
+<td>VirtualBox</td>
+<td>6.0.4</td>
+</tr>
+</tbody>
+</table>
+<p>各ソフトのインストール手順は省略します。</p>
+<h2 id="参考にしたもの">参考にしたもの</h2>
+<p><a href="https://qiita.com/ohuron/items/057b74a42b182b200ae6"target="_blank">【Vagrant】vagrantを導入しよう</a>が非常に参考になります。</p>
+<h2 id="導入手順">導入手順</h2>
+<h3 id="1-初期化">1. 初期化</h3>
+<ol>
+<li>任意のフォルダを作ってそこでVagrantに必要なファイルを置きます。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mkdir vagrant-dev
+$ cd test
+</code></pre></div><ol start="2">
+<li>初期化します。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ vagrant init
+$ ls
+Vagrantfile
+</code></pre></div><ol start="3">
+<li>
+<p>Vagrantfileの<code>config.vm.box = &quot;base&quot;</code>を<code>bento/ubuntu-18.04</code>に変更。</p>
+</li>
+<li>
+<p>立ち上げてログインしてみます。</p>
+</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ vagrant up
+Bringing machine <span style="color:#e6db74">&#39;default&#39;</span> up with <span style="color:#e6db74">&#39;virtualbox&#39;</span> provider...
+<span style="color:#f92672">==</span>&gt; default: Importing base box <span style="color:#e6db74">&#39;bento/ubuntu-18.04&#39;</span>...
+<span style="color:#f92672">==</span>&gt; default: Matching MAC address <span style="color:#66d9ef">for</span> NAT networking...
+...
+
+$ vagrant ssh
+
+vagrant@vagrant:~$ date
+Mon Mar <span style="color:#ae81ff">23</span> 07:37:09 UTC <span style="color:#ae81ff">2020</span>
+vagrant@vagrant:~$ uname -a
+Linux vagrant 4.15.0-65-generic <span style="color:#75715e">#74-Ubuntu SMP Tue Sep 17 17:06:04 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux</span>
+</code></pre></div><p>ちなみにVirtualBoxアプリを開くと仮想マシンが動いてるのが分かります。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-23-vagrant-01.png" 
+        target="_blank"><img class="img" src="/images/2020/03-23-vagrant-01.png"/></a></span>
+</span>
+<h3 id="2-カスタマイズする">2. カスタマイズする</h3>
+<p>最低限やりたいことは以下の通り</p>
+<ul>
+<li>プライベートIPの割当</li>
+<li>ゲストOSの性能を指定する</li>
+<li>開発に必要なソフトウェアのインストール&amp;コード化
+<ul>
+<li>git, terraform, apex, aws-cli, python3, hugo</li>
+</ul>
+</li>
+<li>本体OSとの共有フォルダ作成</li>
+<li>キャッシュ機能の有効化</li>
+</ul>
+<h4 id="完成品">完成品</h4>
+<ul>
+<li>フォルダ・ファイル構成</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ tree vagrant-dev/
+vagrant-dev/
+├── Vagrantfile
+├── ansible
+│   ├── all.yml
+│   ├── inventories
+│   │   └── hosts
+│   └── roles
+│       └── common
+│           └── tasks
+│               └── main.yml
+└── shared
+    ├── hugo-serverless-blog
+    └── serverless-blog-in-aws
+</code></pre></div><ul>
+<li>Vagrantfile</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e"># -*- mode: ruby -*-</span>
+<span style="color:#75715e"># vi: set ft=ruby :</span>
+
+<span style="color:#66d9ef">Vagrant</span><span style="color:#f92672">.</span>configure(<span style="color:#e6db74">&#34;2&#34;</span>) <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>config<span style="color:#f92672">|</span>
+  id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ubuntu-18-04&#34;</span>
+  config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>box <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bento/ubuntu-18.04&#34;</span>
+  config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>hostname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;serverless&#34;</span>
+  config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>network <span style="color:#e6db74">&#34;private_network&#34;</span>, <span style="color:#e6db74">ip</span>: <span style="color:#e6db74">&#34;192.168.33.10&#34;</span>
+
+  <span style="color:#75715e"># Create a forwarded port mapping which allows access to a specific port</span>
+  config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>network <span style="color:#e6db74">&#34;forwarded_port&#34;</span>, <span style="color:#e6db74">guest</span>: <span style="color:#ae81ff">1313</span>, <span style="color:#e6db74">host</span>: <span style="color:#ae81ff">1313</span>, <span style="color:#e6db74">host_ip</span>: <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>
+
+  <span style="color:#75715e"># Share an additional folder to the guest VM.</span>
+  config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>synced_folder <span style="color:#e6db74">&#34;../vagrant-dev&#34;</span>, <span style="color:#e6db74">&#34;/home/vagrant/vagrant-dev&#34;</span>,
+                            <span style="color:#e6db74">create</span>: <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">owner</span>: <span style="color:#e6db74">&#39;vagrant&#39;</span>, <span style="color:#e6db74">group</span>: <span style="color:#e6db74">&#39;vagrant&#39;</span>
+
+  config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>provider <span style="color:#e6db74">&#34;virtualbox&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>v<span style="color:#f92672">|</span>
+    v<span style="color:#f92672">.</span>memory <span style="color:#f92672">=</span> <span style="color:#ae81ff">2048</span>
+    v<span style="color:#f92672">.</span>cpus   <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#75715e"># Internet was too slow</span>
+    <span style="color:#75715e"># https://serverfault.com/questions/495914/vagrant-slow-internet-connection-in-guest</span>
+    v<span style="color:#f92672">.</span>customize <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;modifyvm&#34;</span>, <span style="color:#e6db74">:id</span>, <span style="color:#e6db74">&#34;--natdnshostresolver1&#34;</span>, <span style="color:#e6db74">&#34;on&#34;</span><span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#75715e"># Enable Cache feature if you have the cache plugin.</span>
+  <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">Vagrant</span><span style="color:#f92672">.</span>has_plugin?(<span style="color:#e6db74">&#34;vagrant-cachier&#34;</span>)
+    config<span style="color:#f92672">.</span>cache<span style="color:#f92672">.</span>scope <span style="color:#f92672">=</span> <span style="color:#e6db74">:box</span>
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#75715e"># Play ansible</span>
+  config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>provision <span style="color:#e6db74">&#34;ansible_local&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>ansible<span style="color:#f92672">|</span>
+    ansible<span style="color:#f92672">.</span>playbook       <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./ansible/all.yml&#34;</span>
+    ansible<span style="color:#f92672">.</span>limit          <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;localhost&#34;</span>
+    ansible<span style="color:#f92672">.</span>inventory_path <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./ansible/inventories/hosts&#34;</span>
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+
+</code></pre></div><p>以下解説です。</p>
+<h4 id="プライベートipの割当">プライベートIPの割当</h4>
+<ul>
+<li>Vagrantfileの「private_network」部分をコメントアウト。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>network <span style="color:#e6db74">&#34;private_network&#34;</span>, <span style="color:#e6db74">ip</span>: <span style="color:#e6db74">&#34;192.168.33.10&#34;</span>
+</code></pre></div><blockquote>
+<p>ここで指定されるIPアドレスはパソコンによって異なる可能性があります。</p>
+</blockquote>
+<h4 id="ゲストosの性能を指定する">ゲストOSの性能を指定する</h4>
+<ul>
+<li>Vagrantfileに追記</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>provider <span style="color:#e6db74">&#34;virtualbox&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>v<span style="color:#f92672">|</span>
+  v<span style="color:#f92672">.</span>memory <span style="color:#f92672">=</span> <span style="color:#ae81ff">2048</span>
+  v<span style="color:#f92672">.</span>cpus   <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>参考: <a href="https://www.vagrantup.com/docs/virtualbox/configuration.html#vboxmanage-customizations"target="_blank">VBoxManage Customizations</a></p>
+<h4 id="開発に必要なソフトウェアのインストールコード化">開発に必要なソフトウェアのインストール&amp;コード化</h4>
+<ul>
+<li>共通ロールフォルダを作成</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mkdir -p  ansible/roles/common/tasks/
+$ mkdir -p  ansible/inventries/
+$ touch ansible/roles/common/tasks/main.yml
+$ touch ansible/all.yml
+$ touch ansible/inventries/hosts
+$ tree vagrant-dev/
+vagrant-dev/
+├── Vagrantfile
+├── ansible
+│   ├── all.yml
+│   ├── inventories
+│   │   └── hosts
+│   └── roles
+│       └── common
+│           └── tasks
+│               └── main.yml
+└── shared
+    ├── hugo-serverless-blog
+    └── serverless-blog-in-aws
+</code></pre></div><ul>
+<li>hosts</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">[clients]
+<span style="color:#ae81ff">127.0.0.1</span> ansible_connection=local
+</code></pre></div><ul>
+<li>all.yml</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">---
+- <span style="color:#66d9ef">name</span>: setup local
+  <span style="color:#66d9ef">hosts</span>: localhost
+  <span style="color:#66d9ef">become</span>: <span style="color:#66d9ef">true</span>
+  <span style="color:#66d9ef">vars</span>:
+    <span style="color:#75715e"># A to Z</span>
+    <span style="color:#66d9ef">apex_ver      </span>: <span style="color:#e6db74">&#39;1.0.0-rc3&#39;</span>
+    <span style="color:#66d9ef">aws_cli_ver   </span>: <span style="color:#e6db74">&#39;1.18.26&#39;</span>
+    <span style="color:#66d9ef">hugo_ver      </span>: <span style="color:#e6db74">&#39;0.68.2&#39;</span>
+    <span style="color:#66d9ef">terraform_ver </span>: <span style="color:#e6db74">&#39;0.12.24&#39;</span>
+  <span style="color:#66d9ef">roles</span>:
+    - common
+</code></pre></div><ul>
+<li>main.yml</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">---
+  - <span style="color:#66d9ef">name</span>: Add git repositories to fetch the latest git package
+    <span style="color:#66d9ef">apt_repository</span>:
+      <span style="color:#66d9ef">repo</span>: ppa:git-core/ppa
+
+  - <span style="color:#66d9ef">name</span>: Install pip3
+    <span style="color:#66d9ef">apt</span>:
+      <span style="color:#66d9ef">name</span>: python3-pip
+      <span style="color:#66d9ef">state</span>: latest
+
+  - <span style="color:#66d9ef">name</span>: Install Unzip
+    <span style="color:#66d9ef">apt</span>:
+      <span style="color:#66d9ef">name</span>: unzip
+      <span style="color:#66d9ef">state</span>: latest
+
+  - <span style="color:#66d9ef">name</span>: Download and unarchive then install Terraform
+    <span style="color:#66d9ef">file</span>:
+      <span style="color:#66d9ef">path</span>: /tmp/terraform-{{ terraform_ver }}
+      <span style="color:#66d9ef">state</span>: directory
+  - <span style="color:#66d9ef">unarchive</span>:
+      <span style="color:#66d9ef">src</span>: https://releases.hashicorp.com/terraform/{{ terraform_ver }}/terraform_{{ terraform_ver }}_linux_amd64.zip
+      <span style="color:#66d9ef">dest</span>: /tmp/terraform-{{ terraform_ver }}
+      <span style="color:#66d9ef">remote_src</span>: yes
+  - <span style="color:#66d9ef">copy</span>:
+      <span style="color:#66d9ef">src</span>: /tmp/terraform-{{ terraform_ver }}/terraform
+      <span style="color:#66d9ef">dest</span>: /usr/local/bin/terraform
+      <span style="color:#66d9ef">owner</span>: root
+      <span style="color:#66d9ef">group</span>: root
+      <span style="color:#66d9ef">mode</span>: <span style="color:#ae81ff">0755</span>
+
+  - <span style="color:#66d9ef">name</span>: Download and unarchive then install Apex
+    <span style="color:#66d9ef">file</span>:
+      <span style="color:#66d9ef">path</span>: /tmp/apex-{{ apex_ver }}
+      <span style="color:#66d9ef">state</span>: directory
+  - <span style="color:#66d9ef">unarchive</span>:
+      <span style="color:#66d9ef">src</span>: https://github.com/apex/apex/releases/download/v{{ apex_ver }}/apex_{{ apex_ver }}_linux_amd64.tar.gz
+      <span style="color:#66d9ef">dest</span>: /tmp/apex-{{ apex_ver }}
+      <span style="color:#66d9ef">remote_src</span>: yes
+  - <span style="color:#66d9ef">copy</span>:
+      <span style="color:#66d9ef">src</span>: /tmp/apex-{{ apex_ver }}/apex
+      <span style="color:#66d9ef">dest</span>: /usr/local/bin/apex
+      <span style="color:#66d9ef">owner</span>: root
+      <span style="color:#66d9ef">group</span>: root
+      <span style="color:#66d9ef">mode</span>: <span style="color:#ae81ff">0755</span>
+
+  - <span style="color:#66d9ef">name</span>: Download and unarchive then install Hugo
+    <span style="color:#66d9ef">file</span>:
+      <span style="color:#66d9ef">path</span>: /tmp/hugo-{{ hugo_ver }}
+      <span style="color:#66d9ef">state</span>: directory
+  - <span style="color:#66d9ef">unarchive</span>:
+      <span style="color:#66d9ef">src</span>: https://github.com/gohugoio/hugo/releases/download/v{{ hugo_ver }}/hugo_{{ hugo_ver }}_Linux-64bit.tar.gz
+      <span style="color:#66d9ef">dest</span>: /tmp/hugo-{{ hugo_ver }}
+      <span style="color:#66d9ef">remote_src</span>: yes
+  - <span style="color:#66d9ef">copy</span>:
+      <span style="color:#66d9ef">src</span>: /tmp/hugo-{{ hugo_ver }}/hugo
+      <span style="color:#66d9ef">dest</span>: /usr/local/bin/hugo
+      <span style="color:#66d9ef">owner</span>: root
+      <span style="color:#66d9ef">group</span>: root
+      <span style="color:#66d9ef">mode</span>: <span style="color:#ae81ff">0755</span>
+
+  - <span style="color:#66d9ef">name</span>: Install AWS CLI
+    <span style="color:#66d9ef">command</span>: python3 -m pip install awscli=={{ aws_cli_ver }}
+
+  - <span style="color:#66d9ef">name</span>: Update and upgrade apt packages
+    <span style="color:#66d9ef">become</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">apt</span>:
+      <span style="color:#66d9ef">upgrade</span>: yes
+      <span style="color:#66d9ef">update_cache</span>: yes
+</code></pre></div><ul>
+<li>Vagrantfile (Ansibleでコード化)</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e"># Play ansible</span>
+config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>provision <span style="color:#e6db74">&#34;ansible_local&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>ansible<span style="color:#f92672">|</span>
+  ansible<span style="color:#f92672">.</span>playbook       <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./ansible/all.yml&#34;</span>
+  ansible<span style="color:#f92672">.</span>limit          <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;localhost&#34;</span>
+  ansible<span style="color:#f92672">.</span>inventory_path <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./ansible/inventories/hosts&#34;</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><blockquote>
+<p>ansible.inventory_pathにはvagrantのデフォルトで存在するファイルを指定。自作しても良いが既にあるものを使う。</p>
+</blockquote>
+<ul>
+<li><a href="https://sitest.jp/blog/?p=5094"target="_blank">1コマンドで作った。Vagrant + Ansible によるコードによる構成管理</a></li>
+</ul>
+<h4 id="本体osとの共有フォルダ作成">本体OSとの共有フォルダ作成</h4>
+<ul>
+<li>Vagrantfile (sharedフォルダは手動で作成)</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e"># Share an additional folder to the guest VM.</span>
+config<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>synced_folder <span style="color:#e6db74">&#34;./shared&#34;</span>, <span style="color:#e6db74">&#34;/home/vagrant/shared&#34;</span>,
+                          <span style="color:#e6db74">create</span>: <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">owner</span>: <span style="color:#e6db74">&#39;vagrant&#39;</span>, <span style="color:#e6db74">group</span>: <span style="color:#e6db74">&#39;vagrant&#39;</span>
+</code></pre></div><h4 id="キャッシュ機能の有効化">キャッシュ機能の有効化</h4>
+<p><a href="http://www.1x1.jp/blog/2014/09/vagrant-cachier-plugin.html"target="_blank">Vagrant のプロビジョン時間を削減する vagrant-cachier プラグインが良い</a></p>
+<ul>
+<li>Vagrantfile &amp; <code>$ vagrant plugin install vagrant-cachier</code></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e"># Enable Cache feature if you have the cache plugin.</span>
+<span style="color:#66d9ef">if</span> <span style="color:#66d9ef">Vagrant</span><span style="color:#f92672">.</span>has_plugin?(<span style="color:#e6db74">&#34;vagrant-cachier&#34;</span>)
+  config<span style="color:#f92672">.</span>cache<span style="color:#f92672">.</span>scope <span style="color:#f92672">=</span> <span style="color:#e6db74">:box</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><h1 id="実際に使ってみる">実際に使ってみる</h1>
+<ul>
+<li>設定を反映、ログイン</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># ネットワーク系の設定は一旦停止または再起動させないと反映されません。</span>
+$ vagrant halt
+$ vagrant up
+$ vagrant provision
+$ vagrant ssh
+</code></pre></div><h2 id="hugoサーバーを立ち上げる">Hugoサーバーを立ち上げる</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ pwd
+/home/vagrant/shared
+$ git clone https://github.com/amezousan/hugo-serverless-blog.git
+$ cd hugo-serverless-blog/
+$ hugo server --bind<span style="color:#f92672">=</span>0.0.0.0 --baseURL<span style="color:#f92672">=</span>http://127.0.0.1:1313
+</code></pre></div><blockquote>
+<p>ハマったポイント①: <code>--bind=0.0.0.0</code>がないと、ホストOS側からのアクセスをなぜがゲストOSは「SYN」を受け取った後「RST」パケットを送り、接続を切ってしまいます。Apacheサーバでは起きなかったのでHugo Serverコマンドに何かあることが予想されます。</p>
+</blockquote>
+<blockquote>
+<p>ハマったポイント②: <code>--baseURL</code>を指定することで、一部のリソース(e.g., font-awesome)をきちんと読み込めるようにしています。</p>
+</blockquote>
+<p>ホストOS側で「http://127.0.0.1:1313」にアクセスして、きちんと表示されれば成功！</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-23-vagrant-02.png" 
+        target="_blank"><img class="img" src="/images/2020/03-23-vagrant-02.png"/></a></span>
+</span>
+<h2 id="解決したい課題">解決したい課題</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>hugo server</code>コマンドを使ってもホストOS側のエディタで編集するとリアルタイムで反映されない。
+<ul>
+<li>vimでmarkdownを書く環境を整えてないので、ひとまずホストOS側でサーバを立ち上げる方針で行きます。</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> 別レポジトリの<a href="https://github.com/amezousan/hugo-serverless-blog"target="_blank">amezousan/hugo-serverless-blog</a>と<a href="https://github.com/amezousan/serverless-blog-in-aws"target="_blank">amezousan/serverless-blog-in-aws</a>の開発環境(プラグインとかIAM系とか)を整える。</li>
+</ul>
+<blockquote>
+<p>vagrant上のエディタでしか更新は反映されません。<code>vim</code>などを使ってmarkdownを書く必要があります。vimmerになる良い機会かもしれませんね！</p>
+</blockquote>
+</article>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f23%2fvagrant%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=Vagrant%e3%81%a7%e9%96%8b%e7%99%ba%e7%92%b0%e5%a2%83%e3%82%92%e4%bd%9c%e3%82%8d%e3%81%86%ef%bc%81｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f23%2fvagrant%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83/>開発環境</a><a class="tag" href=/tags/vagrant/>vagrant</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/03/26/cw-event/"><span class="li">&larr;</span>AWSのコストをSlackに通知する【Cloudwatch/SNS編】</a></p><p><a class="link" href="/posts/2020/03/22/cost-lambda/"><span class="li">&rarr;</span>AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

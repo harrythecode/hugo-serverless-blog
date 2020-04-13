@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>開発環境 on サーバレスブログ</title>
+    <link>/categories/%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83/</link>
+    <description>Recent content in 開発環境 on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Mon, 23 Mar 2020 07:51:37 +0100</lastBuildDate>
+    
+        <atom:link href="/categories/%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Vagrantで開発環境を作ろう！</title>
+      <link>/posts/2020/03/23/vagrant/</link>
+      <pubDate>Mon, 23 Mar 2020 07:51:37 +0100</pubDate>
+      
+      <guid>/posts/2020/03/23/vagrant/</guid>
+      <description>今回はVagrantで本サーバレスブログ向けの開発環境を作ろうと思います。 Vagrantを知らない人向けの簡単な説明ですが、これは「自分のパ</description>
+      
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>「hugo/notepadium」にSNSシェアボタンを追加する&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.e0e9a90775a362ffb0a0e38b1d12c95c7c92a12c3dbe4525162fae73da0c078303e0a523689197b84fdbcb5a506b0585.css" integrity="sha384-4OmpB3WjYv&#43;woOOLHRLJXHySoSw9vkUlFi&#43;uc9oMB4MD4KUjaJGXuE/by1pQawWF">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="「hugo/notepadium」にSNSシェアボタンを追加する">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/03/15/sns-share/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="「hugo/notepadium」にSNSシェアボタンを追加する">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-03-15-sns-share.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-03-15-sns-share.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">「hugo/notepadium」にSNSシェアボタンを追加する</h1><p class="article date">2020-03-15</p></section><article class="article markdown-body"><p>今回は本サイトでも使用している「notepadium」テーマにSNSシェアボタンを追加しようと思います。</p>
+<p>とりあえずTwitter, Facebookの2つでシェアできるようにしたいと思います。</p>
+<p>これ難しそうと思われるかもしれませんが、非常に単純なんです。例えば、リンクを作成する<code>&lt;a&gt;</code>タグがありますよね。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">http://example.com</span>&gt;リンク&lt;/<span style="color:#f92672">a</span>&gt;
+</code></pre></div><p>このタグで実際にアクセスする「href」の値をTwitterやFacebookが用意したURLに、あなたがシェアさせたい内容を追加すれば良いだけなんです。</p>
+<h1 id="どんなやり方があるのか">どんなやり方があるのか</h1>
+<ol>
+<li>既存のテーマを真似する</li>
+<li><a href="https://www.trhrkmk.com/posts/hugo-share-button-addthis/"target="_blank">AddThis</a>を使う</li>
+<li><a href="https://sharingbuttons.io/"target="_blank">Sharingbuttons.io</a>を使う</li>
+</ol>
+<p>パッと検索して考えた結果、上記3つの選択肢が候補に上がりました。その後、色々と検討したのですが、</p>
+<p>1.はCSSのデザイン周りもコピーしないといけないので面倒。</p>
+<p>2.はJavascriptまで使用してやり過ぎ。</p>
+<p>結論として「3. Sharingbuttons.ioを使う」のが1番手軽で楽でした。</p>
+<h2 id="sharingbuttonsioを使う">Sharingbuttons.ioを使う</h2>
+<p>今回変更する箇所は下記の通りです。</p>
+<pre><code>.
+├── config.toml
+└── themes/
+    └── hugo-notepadium
+        ├── assets
+        │   ├── css
+        │   │   └── font.css（無ければ新規作成）
+        └── layouts
+            └── partials
+                ├── article-labels.html
+                └── share.html (新規作成)
+</code></pre><p>「font.css」は<a href="https://amezou.com/posts/2020/03/13/custom-css/"target="_blank">「hugo/notepadium」にカスタムCSSとfontawesomeの導入</a>の記事で作成したカスタムCSSです。</p>
+<p>もしカスタムCSSが無ければ今回新たに作成しましょう！好きな名前のファイルでOKです！</p>
+<h3 id="configtomlの変更">config.tomlの変更</h3>
+<p>[params]配下にtwitterUserを追加。この際「@」をつけ忘れないように！</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">params</span>]
+...
+<span style="color:#a6e22e">twitterUser</span> = <span style="color:#e6db74">&#34;@amezousan&#34;</span>
+</code></pre></div><p>もしカスタムCSSの設定をしてない場合は下記を追加。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">assets</span>]
+<span style="color:#a6e22e">css</span> = [<span style="color:#e6db74">&#34;css/font.css&#34;</span>]
+</code></pre></div><h3 id="sns素材をコピー貼り付け">SNS素材をコピー、貼り付け</h3>
+<ol>
+<li><a href="https://sharingbuttons.io/"target="_blank">Sharingbuttons.io</a>にアクセス</li>
+<li>自分が欲しい大きさとデザインを選択。今回はTwitter &amp; Facebookを選択。「Text」には後で分かりやすいように短い文字を入力。
+<span class="image-container"><span class="link" ><a href="/images/2020/03-15-sns-share-01.png" 
+        target="_blank"><img class="img" src="/images/2020/03-15-sns-share-01.png"/></a></span>
+</span></li>
+<li><strong>右側のCSS部分を全てコピーし、font.cssに貼り付ける</strong>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-15-sns-share-02.png" 
+        target="_blank"><img class="img" src="/images/2020/03-15-sns-share-02.png"/></a></span>
+</span></li>
+</ol>
+<ul>
+<li>themes/hugo-notepadium/assets/css/font.css</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">article-container</span> <span style="color:#f92672">p</span> { <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">18</span><span style="color:#66d9ef">px</span>; <span style="color:#66d9ef">line-height</span>: <span style="color:#ae81ff">2</span> ; <span style="color:#66d9ef">padding</span>:<span style="color:#ae81ff">16</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">0</span>; <span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">0</span>;}
+<span style="color:#f92672">h1</span><span style="color:#f92672">,</span><span style="color:#f92672">h2</span><span style="color:#f92672">,</span><span style="color:#f92672">h3</span><span style="color:#f92672">,</span><span style="color:#f92672">h4</span><span style="color:#f92672">,</span><span style="color:#f92672">h5</span><span style="color:#f92672">,</span><span style="color:#f92672">h6</span> {<span style="color:#66d9ef">padding-top</span>: <span style="color:#ae81ff">16</span><span style="color:#66d9ef">px</span>;}
+
+.<span style="color:#a6e22e">resp-sharing-button__link</span><span style="color:#f92672">,</span>
+.<span style="color:#a6e22e">resp-sharing-button__icon</span> {
+  <span style="color:#66d9ef">display</span>: <span style="color:#66d9ef">inline</span><span style="color:#f92672">-</span><span style="color:#66d9ef">block</span>
+<span style="color:#f92672">...</span>
+</code></pre></div><ol start="4">
+<li>Sharingbuttons.ioの<strong>左側のHTML部分を全てコピーし、share.htmlファイルを作成</strong></li>
+</ol>
+<ul>
+<li>themes/hugo-notepadium/layouts/partials/share.html</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#75715e">&lt;!-- Sharingbutton Facebook --&gt;</span>
+&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button__link&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://facebook.com/sharer/sharer.php?u=http%3A%2F%2Fsharingbuttons.io&#34;</span> <span style="color:#a6e22e">target</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;_blank&#34;</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;noopener&#34;</span> <span style="color:#a6e22e">aria-label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small&#34;</span>&gt;&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">aria-hidden</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button__icon resp-sharing-button__icon--solid&#34;</span>&gt;
+    &lt;<span style="color:#f92672">svg</span> <span style="color:#a6e22e">xmlns</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2000/svg&#34;</span> <span style="color:#a6e22e">viewBox</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0 0 24 24&#34;</span>&gt;&lt;<span style="color:#f92672">path</span> <span style="color:#a6e22e">d</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z&#34;</span>/&gt;&lt;/<span style="color:#f92672">svg</span>&gt;
+    &lt;/<span style="color:#f92672">div</span>&gt;
+  &lt;/<span style="color:#f92672">div</span>&gt;
+&lt;/<span style="color:#f92672">a</span>&gt;
+
+<span style="color:#75715e">&lt;!-- Sharingbutton Twitter --&gt;</span>
+&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button__link&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://twitter.com/intent/tweet/?text=text&amp;amp;url=http%3A%2F%2Fsharingbuttons.io&#34;</span> <span style="color:#a6e22e">target</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;_blank&#34;</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;noopener&#34;</span> <span style="color:#a6e22e">aria-label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small&#34;</span>&gt;&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">aria-hidden</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button__icon resp-sharing-button__icon--solid&#34;</span>&gt;
+    &lt;<span style="color:#f92672">svg</span> <span style="color:#a6e22e">xmlns</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2000/svg&#34;</span> <span style="color:#a6e22e">viewBox</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0 0 24 24&#34;</span>&gt;&lt;<span style="color:#f92672">path</span> <span style="color:#a6e22e">d</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z&#34;</span>/&gt;&lt;/<span style="color:#f92672">svg</span>&gt;
+    &lt;/<span style="color:#f92672">div</span>&gt;
+  &lt;/<span style="color:#f92672">div</span>&gt;
+&lt;/<span style="color:#f92672">a</span>&gt;
+</code></pre></div><p>ここでは<code>&lt;a&gt;</code>タグのhrefで、あなたのウェブサイトに適した値を使う必要があるので変更します。</p>
+<ul>
+<li>facebookのリンク
+<ul>
+<li>元の<code>href</code>の値を下記に変更</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">
+href=&#34;https://facebook.com/sharer/sharer.php?u={{ .Permalink | absURL }}&#34;
+
+</code></pre></div><blockquote>
+<p><a href="https://gohugo.io/content-management/urls/#permalinks"target="_blank">.Permalink</a>はそのページの相対パス(/path)を作成</p>
+</blockquote>
+<blockquote>
+<p><a href="https://gohugo.io/functions/absurl/"target="_blank">absURL</a>は受け取った値を元に絶対パス(http://example/path)を作成。</p>
+</blockquote>
+<ul>
+<li>twitterのリンク
+<ul>
+<li>元の<code>href</code>の値を下記に変更</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">
+href=&#34;https://twitter.com/intent/tweet/?text={{ .Title }}｜{{ .Site.Params.twitterUser }}<span style="color:#960050;background-color:#1e0010">&amp;</span>url={{ .Permalink | absURL }}&#34;
+
+</code></pre></div><blockquote>
+<p>Hugoではグローバル変数(<a href="https://gohugo.io/variables/site/#the-siteparams-variable"target="_blank">Site</a>)が利用できます。config.tomlで設定した[param]のtwitterUserを呼び出すには<code>{{ .Site.Params.twitterUser }}</code>と指定します。</p>
+</blockquote>
+<p>センター寄せにするための<code>&lt;div align=center&gt;</code>も追加して完成です。</p>
+<ul>
+<li>themes/hugo-notepadium/layouts/partials/share.html</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">align</span><span style="color:#f92672">=</span><span style="color:#e6db74">center</span>&gt;
+<span style="color:#75715e">&lt;!-- Sharingbutton Facebook --&gt;</span>
+&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button__link&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://facebook.com/sharer/sharer.php?u={{ .Permalink | absURL }}&#34;</span> <span style="color:#a6e22e">target</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;_blank&#34;</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;noopener&#34;</span> <span style="color:#a6e22e">aria-label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small&#34;</span>&gt;&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">aria-hidden</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button__icon resp-sharing-button__icon--solid&#34;</span>&gt;
+    &lt;<span style="color:#f92672">svg</span> <span style="color:#a6e22e">xmlns</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2000/svg&#34;</span> <span style="color:#a6e22e">viewBox</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0 0 24 24&#34;</span>&gt;&lt;<span style="color:#f92672">path</span> <span style="color:#a6e22e">d</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z&#34;</span>/&gt;&lt;/<span style="color:#f92672">svg</span>&gt;
+    &lt;/<span style="color:#f92672">div</span>&gt;
+  &lt;/<span style="color:#f92672">div</span>&gt;
+&lt;/<span style="color:#f92672">a</span>&gt;
+
+<span style="color:#75715e">&lt;!-- Sharingbutton Twitter --&gt;</span>
+&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button__link&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://twitter.com/intent/tweet/?text={{ .Title }}｜{{ .Site.Params.twitterUser }}&amp;url={{ .Permalink | absURL }}&#34;</span> <span style="color:#a6e22e">target</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;_blank&#34;</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;noopener&#34;</span> <span style="color:#a6e22e">aria-label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small&#34;</span>&gt;&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">aria-hidden</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resp-sharing-button__icon resp-sharing-button__icon--solid&#34;</span>&gt;
+    &lt;<span style="color:#f92672">svg</span> <span style="color:#a6e22e">xmlns</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/2000/svg&#34;</span> <span style="color:#a6e22e">viewBox</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0 0 24 24&#34;</span>&gt;&lt;<span style="color:#f92672">path</span> <span style="color:#a6e22e">d</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z&#34;</span>/&gt;&lt;/<span style="color:#f92672">svg</span>&gt;
+    &lt;/<span style="color:#f92672">div</span>&gt;
+  &lt;/<span style="color:#f92672">div</span>&gt;
+&lt;/<span style="color:#f92672">a</span>&gt;
+&lt;/<span style="color:#f92672">div</span>&gt;
+</code></pre></div><ol start="5">
+<li>「article-labels.html」ファイルに「sns.html」を読み込ませます。</li>
+</ol>
+<ul>
+<li>themes/hugo-notepadium/layouts/partials/article-labels.html</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">
+{{- partial &#34;share.html&#34; . -}}
+{{- if or .Params.categories .Params.tags -}}
+
+</code></pre></div><blockquote>
+<p><a href="https://gohugo.io/templates/partials/#use-partials-in-your-templates"target="_blank">partial</a>機能を使うとpartialsフォルダ以下に存在するファイルを読み込む際にパスを省略できます。</p>
+</blockquote>
+<h1 id="完成品">完成品</h1>
+<p>下記のように表示されれば完成です！</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/03-15-sns-share-03.png" 
+        target="_blank"><img class="img" src="/images/2020/03-15-sns-share-03.png"/></a></span>
+</span>
+</article>
+
+<section id=related_link>
+<h3>合わせて読む</h3><p></p>
+<ul>
+	
+	<li><a href="/posts/2020/03/13/custom-css/">「hugo/notepadium」にカスタムCSSとfontawesomeの導入</a></li>
+	
+	<li><a href="/posts/2020/03/12/manage-theme/">HugoのTheme(テーマ)を管理する方法</a></li>
+	
+	<li><a href="/posts/2020/03/11/sns-image/">HugoでTwitterカード画像を自動生成する方法</a></li>
+	
+</ul>
+</section>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f15%2fsns-share%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=%e3%80%8chugo%2fnotepadium%e3%80%8d%e3%81%abSNS%e3%82%b7%e3%82%a7%e3%82%a2%e3%83%9c%e3%82%bf%e3%83%b3%e3%82%92%e8%bf%bd%e5%8a%a0%e3%81%99%e3%82%8b｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f03%2f15%2fsns-share%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/>サーバレスブログ</a><a class="tag" href=/tags/hugo/>hugo</a><a class="tag" href=/tags/hugo-custom/>hugo-custom</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/03/18/see-also/"><span class="li">&larr;</span>「hugo/notepadium」に「合わせて読む」機能の追加</a></p><p><a class="link" href="/posts/2020/03/13/custom-css/"><span class="li">&rarr;</span>「hugo/notepadium」にカスタムCSSとfontawesomeの導入</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

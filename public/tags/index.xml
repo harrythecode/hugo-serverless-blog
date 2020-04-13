@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on サーバレスブログ</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Mon, 13 Apr 2020 09:21:59 +0000</lastBuildDate>
+    
+        <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>aws</title>
+      <link>/tags/aws/</link>
+      <pubDate>Mon, 13 Apr 2020 09:21:59 +0000</pubDate>
+      
+      <guid>/tags/aws/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>github</title>
+      <link>/tags/github/</link>
+      <pubDate>Mon, 13 Apr 2020 09:21:59 +0000</pubDate>
+      
+      <guid>/tags/github/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>s3</title>
+      <link>/tags/s3/</link>
+      <pubDate>Mon, 13 Apr 2020 09:21:59 +0000</pubDate>
+      
+      <guid>/tags/s3/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>cloudwatch</title>
+      <link>/tags/cloudwatch/</link>
+      <pubDate>Thu, 26 Mar 2020 16:40:10 +0000</pubDate>
+      
+      <guid>/tags/cloudwatch/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>lambda</title>
+      <link>/tags/lambda/</link>
+      <pubDate>Thu, 26 Mar 2020 16:40:10 +0000</pubDate>
+      
+      <guid>/tags/lambda/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>sns</title>
+      <link>/tags/sns/</link>
+      <pubDate>Thu, 26 Mar 2020 16:40:10 +0000</pubDate>
+      
+      <guid>/tags/sns/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>vagrant</title>
+      <link>/tags/vagrant/</link>
+      <pubDate>Mon, 23 Mar 2020 07:51:37 +0100</pubDate>
+      
+      <guid>/tags/vagrant/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>hugo</title>
+      <link>/tags/hugo/</link>
+      <pubDate>Wed, 18 Mar 2020 23:48:00 +0100</pubDate>
+      
+      <guid>/tags/hugo/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>hugo-custom</title>
+      <link>/tags/hugo-custom/</link>
+      <pubDate>Wed, 18 Mar 2020 23:48:00 +0100</pubDate>
+      
+      <guid>/tags/hugo-custom/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>about</title>
+      <link>/tags/about/</link>
+      <pubDate>Thu, 12 Mar 2020 00:47:09 +0100</pubDate>
+      
+      <guid>/tags/about/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>blog</title>
+      <link>/tags/blog/</link>
+      <pubDate>Sun, 08 Mar 2020 01:53:31 +0100</pubDate>
+      
+      <guid>/tags/blog/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>serverless</title>
+      <link>/tags/serverless/</link>
+      <pubDate>Sun, 08 Mar 2020 01:53:31 +0100</pubDate>
+      
+      <guid>/tags/serverless/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>terraform</title>
+      <link>/tags/terraform/</link>
+      <pubDate>Sun, 08 Mar 2020 01:53:31 +0100</pubDate>
+      
+      <guid>/tags/terraform/</guid>
+      <description></description>
+      
+    </item>
+    
+  </channel>
+</rss>

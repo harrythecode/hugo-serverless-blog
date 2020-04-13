@@ -40,8 +40,17 @@ def add_text_to_image(img, base_text, font_path, font_size, font_color, height, 
     return img
 
 target = sys.argv[1]
-if (path.exists(target)):
-    print("skipping:%s because the thumbnail already exists." % target)
+
+# 画像のパスをきれいにします
+# (e.g.,) target: content/posts/2020-03-11-this-is-a-pen.md
+# -> 2020-03-11-this-is-a-pen.png
+target_image = target.replace("content/posts/", "")
+target_image = target_image.replace("/", "-")
+target_image = target_image.replace(".md", ".png")
+target_image_path = "static/thumbnails/" + target_image
+
+if (path.exists(target_image_path)):
+    # print("skipping:%s because the thumbnail already exists." % target_image_path)
     exit(0)
 else:
     print("target:%s" % target)
@@ -74,11 +83,4 @@ width      = 100
 line       = 1
 img        = add_text_to_image(base_img, text, font_path, font_size, font_color, height, width, line)
 
-# 画像のパスをきれいにします
-# (e.g.,) target: content/posts/2020-03-11-this-is-a-pen.md
-# -> 2020-03-11-this-is-a-pen
-target = target.replace("content/posts/", "")
-target = target.replace("/", "-")
-target = target.replace(".md", "")
-
-img.save("static/thumbnails/%s.png" % target)
+img.save(target_image_path)

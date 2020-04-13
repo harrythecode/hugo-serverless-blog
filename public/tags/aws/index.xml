@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>aws on サーバレスブログ</title>
+    <link>/tags/aws/</link>
+    <description>Recent content in aws on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Mon, 13 Apr 2020 09:21:59 +0000</lastBuildDate>
+    
+        <atom:link href="/tags/aws/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>[CI/CD] Github ActionsとS3を連携させる[developmentブランチ編]</title>
+      <link>/posts/2020/04/13/ci-cd/</link>
+      <pubDate>Mon, 13 Apr 2020 09:21:59 +0000</pubDate>
+      
+      <guid>/posts/2020/04/13/ci-cd/</guid>
+      <description>今回は[CI/CD] Github ActionsとS3を連携させる[プラン編]の続きです。 やりたいことの確認 前回記事よりやりたいことを再度確認します。 差</description>
+      
+    </item>
+    
+    <item>
+      <title>[CI/CD] Github ActionsとS3を連携させる[プラン編]</title>
+      <link>/posts/2020/04/05/github-actions/</link>
+      <pubDate>Sun, 05 Apr 2020 06:51:24 +0000</pubDate>
+      
+      <guid>/posts/2020/04/05/github-actions/</guid>
+      <description>今回は本サーバレスブログをCI/CD化させてみたいと思います。 はじめに CI/CDとは「Continuous Integration／Conti</description>
+      
+    </item>
+    
+    <item>
+      <title>AWSのコストをSlackに通知する【Cloudwatch/SNS編】</title>
+      <link>/posts/2020/03/26/cw-event/</link>
+      <pubDate>Thu, 26 Mar 2020 16:40:10 +0000</pubDate>
+      
+      <guid>/posts/2020/03/26/cw-event/</guid>
+      <description>今回はCloudwatch Eventsを作成して、Lambdaを定期実行させ、失敗時のSNSトピックを作成します。 おさらい ②は完成したので今</description>
+      
+    </item>
+    
+    <item>
+      <title>AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】</title>
+      <link>/posts/2020/03/22/cost-lambda/</link>
+      <pubDate>Sun, 22 Mar 2020 16:50:52 +0100</pubDate>
+      
+      <guid>/posts/2020/03/22/cost-lambda/</guid>
+      <description>本記事は「AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】」の続きです。 前回の記事ではLambdaで実行するコ</description>
+      
+    </item>
+    
+    <item>
+      <title>AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】</title>
+      <link>/posts/2020/03/22/cli-lambda/</link>
+      <pubDate>Sun, 22 Mar 2020 15:58:24 +0100</pubDate>
+      
+      <guid>/posts/2020/03/22/cli-lambda/</guid>
+      <description>以下の記事を読んでない方は先に読むことをオススメします。 前々回「AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】」 前</description>
+      
+    </item>
+    
+    <item>
+      <title>AWSのコストをSlackに通知する【Lambda - (2)STS編】</title>
+      <link>/posts/2020/03/21/aws-cost-sts/</link>
+      <pubDate>Sat, 21 Mar 2020 12:36:44 +0100</pubDate>
+      
+      <guid>/posts/2020/03/21/aws-cost-sts/</guid>
+      <description>前回記事「AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】」の続きです。 おさらい Lambdaを使って、CloudWa</description>
+      
+    </item>
+    
+    <item>
+      <title>AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】</title>
+      <link>/posts/2020/03/21/aws-cost/</link>
+      <pubDate>Sat, 21 Mar 2020 09:15:49 +0100</pubDate>
+      
+      <guid>/posts/2020/03/21/aws-cost/</guid>
+      <description>今回は下記のような仕組みを使います。 ①Cloudwatch Events: Lambdaを定期実行(毎朝8時) ②Lambda: Lambda実行用のIAMロー</description>
+      
+    </item>
+    
+    <item>
+      <title>【保存版】爆速！サーバレスブログの作り方【Hugo &#43; AWS(S3,Route53,Cloudfront)】</title>
+      <link>/posts/2020/03/07/serverless-blog/</link>
+      <pubDate>Sat, 07 Mar 2020 10:17:48 +0100</pubDate>
+      
+      <guid>/posts/2020/03/07/serverless-blog/</guid>
+      <description>本サイトはサーバレスで構成されています。 ブログに使用しているサービスは「Route53, ACM, Cloudfront, S3」です。 ユーザがアクセスする際に使われるドメ</description>
+      
+    </item>
+    
+  </channel>
+</rss>

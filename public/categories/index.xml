@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Categories on サーバレスブログ</title>
+    <link>/categories/</link>
+    <description>Recent content in Categories on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Mon, 13 Apr 2020 09:21:59 +0000</lastBuildDate>
+    
+        <atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>AWS</title>
+      <link>/categories/aws/</link>
+      <pubDate>Mon, 13 Apr 2020 09:21:59 +0000</pubDate>
+      
+      <guid>/categories/aws/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>DevOps</title>
+      <link>/categories/devops/</link>
+      <pubDate>Mon, 13 Apr 2020 09:21:59 +0000</pubDate>
+      
+      <guid>/categories/devops/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>サーバレス技術</title>
+      <link>/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E6%8A%80%E8%A1%93/</link>
+      <pubDate>Thu, 26 Mar 2020 16:40:10 +0000</pubDate>
+      
+      <guid>/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E6%8A%80%E8%A1%93/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>開発環境</title>
+      <link>/categories/%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83/</link>
+      <pubDate>Mon, 23 Mar 2020 07:51:37 +0100</pubDate>
+      
+      <guid>/categories/%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>サーバレスブログ</title>
+      <link>/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/</link>
+      <pubDate>Wed, 18 Mar 2020 23:48:00 +0100</pubDate>
+      
+      <guid>/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>自己紹介</title>
+      <link>/categories/%E8%87%AA%E5%B7%B1%E7%B4%B9%E4%BB%8B/</link>
+      <pubDate>Thu, 12 Mar 2020 00:47:09 +0100</pubDate>
+      
+      <guid>/categories/%E8%87%AA%E5%B7%B1%E7%B4%B9%E4%BB%8B/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Twitterカード画像の自動生成化</title>
+      <link>/categories/twitter%E3%82%AB%E3%83%BC%E3%83%89%E7%94%BB%E5%83%8F%E3%81%AE%E8%87%AA%E5%8B%95%E7%94%9F%E6%88%90%E5%8C%96/</link>
+      <pubDate>Wed, 11 Mar 2020 13:55:46 +0100</pubDate>
+      
+      <guid>/categories/twitter%E3%82%AB%E3%83%BC%E3%83%89%E7%94%BB%E5%83%8F%E3%81%AE%E8%87%AA%E5%8B%95%E7%94%9F%E6%88%90%E5%8C%96/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>エンジニア思考</title>
+      <link>/categories/%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E6%80%9D%E8%80%83/</link>
+      <pubDate>Sun, 08 Mar 2020 01:53:31 +0100</pubDate>
+      
+      <guid>/categories/%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E6%80%9D%E8%80%83/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>雑記</title>
+      <link>/categories/%E9%9B%91%E8%A8%98/</link>
+      <pubDate>Sun, 08 Mar 2020 01:53:31 +0100</pubDate>
+      
+      <guid>/categories/%E9%9B%91%E8%A8%98/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>CI/CD</title>
+      <link>/categories/ci/cd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/ci/cd/</guid>
+      <description></description>
+      
+    </item>
+    
+  </channel>
+</rss>
