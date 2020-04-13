@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"><url>
+    <loc>https://amezou.com/posts/2020/04/11/ci-cd/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
+    <loc>https://amezou.com/categories/aws/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/aws/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
+    <loc>https://amezou.com/categories/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
+    <loc>https://amezou.com/categories/devops/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/github/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
+    <loc>https://amezou.com/posts/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/s3/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/</loc><lastmod>2020-04-11T09:21:59+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/04/05/github-actions/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
-    <loc>https://amezou.com/categories/aws/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/aws/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
-    <loc>https://amezou.com/categories/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/devops/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
-    <loc>https://amezou.com/categories/github/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
-    <loc>https://amezou.com/posts/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
-    <loc>https://amezou.com/categories/s3/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/03/26/cw-event/</loc><lastmod>2020-03-26T16:40:10+00:00</lastmod></url><url>
     <loc>https://amezou.com/tags/cloudwatch/</loc><lastmod>2020-03-26T16:40:10+00:00</lastmod></url><url>
     <loc>https://amezou.com/tags/lambda/</loc><lastmod>2020-03-26T16:40:10+00:00</lastmod></url><url>
@@ -42,4 +43,4 @@
     <loc>https://amezou.com/posts/2020/03/08/terraform/</loc><lastmod>2020-03-08T01:53:31+01:00</lastmod></url><url>
     <loc>https://amezou.com/categories/%E9%9B%91%E8%A8%98/</loc><lastmod>2020-03-08T01:53:31+01:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/03/07/serverless-blog/</loc><lastmod>2020-03-07T10:17:48+01:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/ci/cd/</loc></url></urlset>
+    <loc>https://amezou.com/categories/ci/cd/</loc></url></urlset>
