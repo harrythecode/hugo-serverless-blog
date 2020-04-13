@@ -23,9 +23,6 @@ jobs:
       uses: peaceiris/actions-hugo@v2
       with:
         hugo-version: '0.68.3'
-    # Make deploy用に先にpublicフォルダを生成
-    - name: Deploy hugo
-      run: hugo
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
@@ -44,8 +41,8 @@ jobs:
     - name: Commit all changes
       run: |
         ls -la
-        git config --global user.email "actions@users.noreply.github.com"
-        git config --global user.name "github-actions"
+        git config --global user.email "amezousan@users.noreply.github.com"
+        git config --global user.name "amezousan"
         git add --all
         git status
         git commit -m "Automated deployment"
