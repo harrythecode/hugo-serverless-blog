@@ -21,16 +21,6 @@
     </item>
     
     <item>
-      <title>[CI/CD] Github ActionsとS3を連携させる[実装編]</title>
-      <link>/posts/2020/04/11/ci-cd/</link>
-      <pubDate>Sat, 11 Apr 2020 09:21:59 +0000</pubDate>
-      
-      <guid>/posts/2020/04/11/ci-cd/</guid>
-      <description>今回は[CI/CD] Github ActionsとS3を連携させる[プラン編]の続きです。 前回記事よりやりたいことを再度確認します。 差分があるものを更新</description>
-      
-    </item>
-    
-    <item>
       <title>[CI/CD] Github ActionsとS3を連携させる[プラン編]</title>
       <link>/posts/2020/04/05/github-actions/</link>
       <pubDate>Sun, 05 Apr 2020 06:51:24 +0000</pubDate>
