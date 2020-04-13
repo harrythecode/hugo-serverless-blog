@@ -50,7 +50,7 @@ developmentブランチ上では次の２点を行います。
 
 ## 完成品
 
-- main.yml
+- development.yml
 ```yaml
 name: development
 
@@ -98,8 +98,8 @@ jobs:
     - name: Commit all changes
       run: |
         ls -la
-        git config --global user.email "actions@users.noreply.github.com"
-        git config --global user.name "github-actions"
+        git config --global user.email "amezousan@users.noreply.github.com"
+        git config --global user.name "amezousan"
         git add --all
         git status
         git commit -m "Automated deployment"
@@ -110,7 +110,7 @@ jobs:
 
 {{<figure src="/images/2020/04-13-ci-cd-02.png">}}
 
-> emailとusernameをダミーにしています。特に何か連携する訳でもないのでこのままにしておく予定です。
+> Commit all changes内のemailとusernameは適宜各自のユーザ名に修正してください。
 
 - [Github - peaceiris/actions-hugo](https://github.com/peaceiris/actions-hugo)
 - [GitHub ActionsでのPythonの利用](https://help.github.com/ja/actions/language-and-framework-guides/using-python-with-github-actions)
