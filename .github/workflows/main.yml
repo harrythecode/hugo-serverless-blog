@@ -6,31 +6,44 @@ on:
 
 jobs:
   deploy:
-    name: Sync S3 bucket with serverless blog
+    name: Create Hugo contents & Push to development branch
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python: [3.6]
         
     steps:
-    # To access git repo
+    # Githubレポジトリのファイルにアクセスする用
     - name: Checkout
       uses: actions/checkout@v2
       with:
           submodules: true  # Fetch Hugo themes
+    # Hugoのインストール
     - name: Setup Hugo
       uses: peaceiris/actions-hugo@v2
       with:
         hugo-version: '0.68.3'
+    # Make deploy用に先にpublicフォルダを生成
     - name: Deploy hugo
-      run: hugo -t hugo-notepadium
+      run: hugo
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python }}
+    # 自動画像生成に必要なライブラリ郡
     - name: Install pillow via pip
       run: pip install Pillow==7.0.0
     - name: Install pyyaml via pip
       run: pip install pyyaml==5.3.1
+    # Makefileのdeployを実行
     - name: Make deploy
       run: make deploy
+    # 変更がない場合でもコミットできるようにタイムスタンプを更新
+    - name: Create report file
+      run: date +%s > report.txt
+    - name: Commit all changes
+      run: |
+        git config --global user.name 'amezousan'
+        git config --global user.email 'goesbyamezou@gmail.com'
+        git commit -am "Automated deployment"
+        git push
