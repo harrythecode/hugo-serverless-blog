@@ -1,0 +1,13 @@
+{{ $related := .Site.RegularPages.Related . | first 3 }}
+{{ with $related }}
+<section id=related_link>
+<h3>合わせて読む</h3><p></p>
+<ul>
+	{{ range . }}
+	<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+	{{ end }}
+</ul>
+</section>
+{{ end }}
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div>
