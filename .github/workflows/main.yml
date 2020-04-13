@@ -46,6 +46,7 @@ jobs:
         ls -la
         git config --global user.name 'amezousan'
         git config --global user.email 'goesbyamezou@gmail.com'
+        git add --all
         git status
-        git commit -am "Automated deployment"
+        git commit -m "Automated deployment"
         git push
