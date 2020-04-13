@@ -53,7 +53,7 @@
 <p>ひとまずdevelopmentブランチ上でテストをしながら作成していきます。</p>
 <h2 id="完成品">完成品</h2>
 <ul>
-<li>main.yml</li>
+<li>development.yml</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">name</span>: development
 
@@ -101,8 +101,8 @@
     - <span style="color:#66d9ef">name</span>: Commit all changes
       <span style="color:#66d9ef">run</span>: <span style="color:#e6db74">|
 </span><span style="color:#e6db74">        ls -la</span>
-        git config --global user.email <span style="color:#e6db74">&#34;actions@users.noreply.github.com&#34;</span>
-        git config --global user.name <span style="color:#e6db74">&#34;github-actions&#34;</span>
+        git config --global user.email <span style="color:#e6db74">&#34;amezousan@users.noreply.github.com&#34;</span>
+        git config --global user.name <span style="color:#e6db74">&#34;amezousan&#34;</span>
         git add --all
         git status
         git commit -m <span style="color:#e6db74">&#34;Automated deployment&#34;</span>
@@ -112,7 +112,7 @@
         target="_blank"><img class="img" src="/images/2020/04-13-ci-cd-02.png"/></a></span>
 </span>
 <blockquote>
-<p>emailとusernameをダミーにしています。特に何か連携する訳でもないのでこのままにしておく予定です。</p>
+<p>Commit all changes内のemailとusernameは適宜各自のユーザ名に修正してください。</p>
 </blockquote>
 <ul>
 <li><a href="https://github.com/peaceiris/actions-hugo"target="_blank">Github - peaceiris/actions-hugo</a></li>
