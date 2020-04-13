@@ -44,7 +44,8 @@ jobs:
     - name: Commit all changes
       run: |
         ls -la
-        git config --show-origin --get-regexp "user.*"
+        git config --global user.email "actions@users.noreply.github.com"
+        git config --global user.name "github-actions"
         git add --all
         git status
         git commit -m "Automated deployment"
