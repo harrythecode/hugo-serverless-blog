@@ -1,12 +1,12 @@
 name: development
 
 on:
-if: startWith(github.ref,'release') == true
   pull_request:
     types: [ opened, edited ]
 
 jobs:
   deploy:
+    if: startWith(github.ref,'release') == true
     name: Create Hugo contents & Push to development branch
     runs-on: ubuntu-latest
     strategy:
