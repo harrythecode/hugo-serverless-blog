@@ -20,7 +20,7 @@ jobs:
       with:
           submodules: true  # Fetch Hugo themes
     - run: |
-       git fetch origin +refs/pull/${{ github.event.issue.number }}/merge
+       git fetch origin +${{ github.ref }}
        git checkout FETCH_HEAD
     # Hugoのインストール
     - name: Setup Hugo
@@ -50,4 +50,4 @@ jobs:
         git add --all
         git status
         git commit -m "Automated deployment"
-        git push
+        git push origin HEAD:${{ github.head_ref }}
