@@ -4,7 +4,7 @@
 baseURL         = "https://amezou.com/"
 languageCode    = "ja-JP"
 title           = "サーバレスブログ"
-theme           = "hugo-notepadium"
+theme           = "hugo-notepadium-custom"
 hasCJKLanguage  = true
 enableRobotsTXT = true
 # //
