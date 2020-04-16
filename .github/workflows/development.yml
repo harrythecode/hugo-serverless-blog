@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    if: startsWith(github.ref, 'release') == true
+    if: contains(github.ref,'release') == true
     name: Create Hugo contents & Push to development branch
     runs-on: ubuntu-latest
     strategy:
@@ -14,6 +14,8 @@ jobs:
         python: [3.6]
         
     steps:
+    - name: Echo github ref
+      run: echo ${{ github.ref }}
     # Githubレポジトリのファイルにアクセスする用
     - name: Checkout
       uses: actions/checkout@v2
