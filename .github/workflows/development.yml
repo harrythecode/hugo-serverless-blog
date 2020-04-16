@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    if: startWith(github.ref,'release') == true
+    if: startsWith(github.ref, 'release') == true
     name: Create Hugo contents & Push to development branch
     runs-on: ubuntu-latest
     strategy:
