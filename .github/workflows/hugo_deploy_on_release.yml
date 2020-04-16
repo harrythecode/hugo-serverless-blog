@@ -1,43 +1,56 @@
-name: development
+name: HugoDeployOnPullRequest
 
 on:
-  push:
-    branches: [ development ]
+  pull_request:
+    types: [ opened, edited ]
 
 jobs:
   deploy:
-    name: Create Hugo contents & Push to development branch
+    # "github.head_ref" returns the branch name on the pull request
+    if: contains(github.head_ref, 'release') == true
+    name: Create Hugo contents & Push to the release branch
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python: [3.6]
         
     steps:
-    # Githubレポジトリのファイルにアクセスする用
+
+    ###
+    # Initial Setup
     - name: Checkout
       uses: actions/checkout@v2
       with:
-          submodules: true  # Fetch Hugo themes
-    # Hugoのインストール
+          ref: ${{ github.head_ref }}
     - name: Setup Hugo
       uses: peaceiris/actions-hugo@v2
       with:
         hugo-version: '0.68.3'
+    # //
+    ###
+
+    ###
+    # Install Python & Library for Automatic Thumbnail Script
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python }}
-    # 自動画像生成に必要なライブラリ郡
     - name: Install pillow via pip
       run: pip install Pillow==7.0.0
     - name: Install pyyaml via pip
       run: pip install pyyaml==5.3.1
-    # Makefileのdeployを実行
     - name: Make deploy
       run: make deploy
-    # 変更がない場合でもコミットできるようにタイムスタンプを更新
+    # //
+    ###
+
+    ###
+    # Push to the release branch
+
+    # To be able to push always even if there is no change
     - name: Create report file
       run: date +%s > report.txt
+
     - name: Commit all changes
       run: |
         ls -la
@@ -46,4 +59,6 @@ jobs:
         git add --all
         git status
         git commit -m "Automated deployment"
-        git push
+        git push origin ${{ github.head_ref }}
+    # //
+    ###
