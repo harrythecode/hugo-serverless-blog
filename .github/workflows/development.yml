@@ -13,8 +13,8 @@ jobs:
         python: [3.6]
         
     steps:
-    - name: Echo github ref
-      run: echo ${{ github.ref }}
+    - name: Echo github head_ref
+      run: echo ${{ github.head_ref }}
     # Githubレポジトリのファイルにアクセスする用
     - name: Checkout
       uses: actions/checkout@v2
