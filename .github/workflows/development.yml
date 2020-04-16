@@ -6,6 +6,7 @@ on:
 
 jobs:
   deploy:
+    if: contains(github.head_ref, 'release') == true
     name: Create Hugo contents & Push to development branch
     runs-on: ubuntu-latest
     strategy:
@@ -13,8 +14,6 @@ jobs:
         python: [3.6]
         
     steps:
-    - name: Echo github head_ref
-      run: echo ${{ github.head_ref }}
     # Githubレポジトリのファイルにアクセスする用
     - name: Checkout
       uses: actions/checkout@v2
@@ -48,4 +47,4 @@ jobs:
         git add --all
         git status
         git commit -m "Automated deployment"
-        git push
+        git push origin HEAD:${{ github.head_ref }}
