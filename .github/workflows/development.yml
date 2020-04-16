@@ -2,7 +2,8 @@ name: development
 
 on:
   pull_request:
-    branches: [ development, release/* ]
+    branches:
+        if: startWith(github.ref,'release') == true
     types: [ opened, edited ]
 
 jobs:
