@@ -13,6 +13,7 @@ enableRobotsTXT = true
 [params]
 style   = "light"
 slogan  = "世の中のイケてる技術を紹介していきます。"
+logo    = "/images/sites/2020-04-24-icon-72x72.png"
 license = "(C) 2020, All Rights Reserved."
 og_image = "/thumbnails/default.png"
 twitterUser = "@amezousan"
