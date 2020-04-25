@@ -12,7 +12,7 @@ meta_image  : "/thumbnails/2020-03-12-about.png"
 description : ""
 ---
 
-{{< figure src="/images/sites/2020-03-12-about-01.png" width="200">}}
+{{< figure src="/images/sites/2020-04-24-about-01.png" width="200">}}
 
 <div align=center>
 
