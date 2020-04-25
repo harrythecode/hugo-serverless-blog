@@ -72,3 +72,5 @@ logo    = "/images/sites/2020-04-24-icon-72x72.png"
 
 > Before: {{<figure src="/images/2020/04-24-site-custom-01.png">}}
 > After: {{<figure src="/images/2020/04-24-site-custom-02.png">}}
+
+今回は以上です。
