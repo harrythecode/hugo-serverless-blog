@@ -6,10 +6,30 @@
     <description>Recent content in Tags on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Fri, 17 Apr 2020 04:05:37 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 24 Apr 2020 14:42:53 +0000</lastBuildDate>
     
         <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>hugo</title>
+      <link>/tags/hugo/</link>
+      <pubDate>Fri, 24 Apr 2020 14:42:53 +0000</pubDate>
+      
+      <guid>/tags/hugo/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>hugo-custom</title>
+      <link>/tags/hugo-custom/</link>
+      <pubDate>Fri, 24 Apr 2020 14:42:53 +0000</pubDate>
+      
+      <guid>/tags/hugo-custom/</guid>
+      <description></description>
+      
+    </item>
     
     <item>
       <title>aws</title>
@@ -77,26 +97,6 @@
       <pubDate>Mon, 23 Mar 2020 07:51:37 +0100</pubDate>
       
       <guid>/tags/vagrant/</guid>
-      <description></description>
-      
-    </item>
-    
-    <item>
-      <title>hugo</title>
-      <link>/tags/hugo/</link>
-      <pubDate>Wed, 18 Mar 2020 23:48:00 +0100</pubDate>
-      
-      <guid>/tags/hugo/</guid>
-      <description></description>
-      
-    </item>
-    
-    <item>
-      <title>hugo-custom</title>
-      <link>/tags/hugo-custom/</link>
-      <pubDate>Wed, 18 Mar 2020 23:48:00 +0100</pubDate>
-      
-      <guid>/tags/hugo-custom/</guid>
       <description></description>
       
     </item>

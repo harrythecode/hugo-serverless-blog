@@ -6,10 +6,20 @@
     <description>Recent content in Posts on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Fri, 17 Apr 2020 04:05:37 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 24 Apr 2020 14:42:53 +0000</lastBuildDate>
     
         <atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>「hugo/notepadium」にfaviconとロゴの追加、CSSの改良</title>
+      <link>/posts/2020/04/24/site-custom/</link>
+      <pubDate>Fri, 24 Apr 2020 14:42:53 +0000</pubDate>
+      
+      <guid>/posts/2020/04/24/site-custom/</guid>
+      <description>今回は、faviconとロゴの追加、そして少しだけCSSを改良します。 変更点 faviconの作成 ロゴの追加 CSSの微改良 faviconの作成</description>
+      
+    </item>
     
     <item>
       <title>[CI/CD] Github ActionsとS3を連携させる[AWS S3 Sync編]</title>
