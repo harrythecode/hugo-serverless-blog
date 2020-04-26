@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"><url>
-    <loc>https://amezou.com/categories/</loc><lastmod>2020-04-24T14:42:53+00:00</lastmod></url><url>
+    <loc>https://amezou.com/posts/2020/04/26/git-actions/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
+    <loc>https://amezou.com/categories/aws/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/aws/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
+    <loc>https://amezou.com/categories/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
+    <loc>https://amezou.com/categories/devops/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/github/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
+    <loc>https://amezou.com/posts/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/s3/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/</loc><lastmod>2020-04-26T07:42:20+00:00</lastmod></url><url>
     <loc>https://amezou.com/tags/hugo/</loc><lastmod>2020-04-24T14:42:53+00:00</lastmod></url><url>
     <loc>https://amezou.com/tags/hugo-custom/</loc><lastmod>2020-04-24T14:42:53+00:00</lastmod></url><url>
-    <loc>https://amezou.com/posts/</loc><lastmod>2020-04-24T14:42:53+00:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/</loc><lastmod>2020-04-24T14:42:53+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/04/24/site-custom/</loc><lastmod>2020-04-24T14:42:53+00:00</lastmod></url><url>
     <loc>https://amezou.com/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/</loc><lastmod>2020-04-24T14:42:53+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/04/17/aws-s3-sync/</loc><lastmod>2020-04-17T04:05:37+00:00</lastmod></url><url>
-    <loc>https://amezou.com/categories/aws/</loc><lastmod>2020-04-17T04:05:37+00:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/aws/</loc><lastmod>2020-04-17T04:05:37+00:00</lastmod></url><url>
-    <loc>https://amezou.com/categories/devops/</loc><lastmod>2020-04-17T04:05:37+00:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/github/</loc><lastmod>2020-04-17T04:05:37+00:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/s3/</loc><lastmod>2020-04-17T04:05:37+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/04/13/ci-cd/</loc><lastmod>2020-04-13T09:21:59+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/04/05/github-actions/</loc><lastmod>2020-04-05T06:51:24+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/03/26/cw-event/</loc><lastmod>2020-03-26T16:40:10+00:00</lastmod></url><url>
