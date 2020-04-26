@@ -20,12 +20,12 @@ FILES=()
 for i in $( git status -s | sed 's/\s*[a-zA-Z"?]\+ \(.*\)/\1/' | sed 's/"//g' | grep "public/"); do
     FILES+=( "$i" )
 done
-echo "${FILES[@]}"
+# echo "${FILES[@]}"
 
 CMDS=()
 for i in "${FILES[@]}"; do
     CMDS+=("--include=$i""*")
 done
-echo ${CMDS[@]}
+# echo ${CMDS[@]}
 
-echo "${CMDS[@]}" | xargs aws s3 sync . s3://${S3_BUCKET} --dryrun --delete --exclude "*" --profile terraform-init-role
+echo "${CMDS[@]}" | xargs aws s3 sync ./public s3://${S3_BUCKET}/public --delete --exclude "*"

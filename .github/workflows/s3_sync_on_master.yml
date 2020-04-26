@@ -24,4 +24,5 @@ jobs:
 
     - name: Sync files to S3 with the AWS CLI
       run: |
-        aws s3 sync ./public s3://${{ secrets.AWS_S3_BUCKET }}/public --size-only --delete
+        chmod +x ./aws_s3_sync_with_git_status.sh
+        ./aws_s3_sync_with_git_status.sh -b ${{ secrets.AWS_S3_BUCKET }}
