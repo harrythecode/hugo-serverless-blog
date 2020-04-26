@@ -6,25 +6,15 @@
     <description>Recent content in Categories on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Fri, 24 Apr 2020 14:42:53 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 26 Apr 2020 07:42:20 +0000</lastBuildDate>
     
         <atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>サーバレスブログ</title>
-      <link>/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/</link>
-      <pubDate>Fri, 24 Apr 2020 14:42:53 +0000</pubDate>
-      
-      <guid>/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/</guid>
-      <description></description>
-      
-    </item>
-    
-    <item>
       <title>AWS</title>
       <link>/categories/aws/</link>
-      <pubDate>Fri, 17 Apr 2020 04:05:37 +0000</pubDate>
+      <pubDate>Sun, 26 Apr 2020 07:42:20 +0000</pubDate>
       
       <guid>/categories/aws/</guid>
       <description></description>
@@ -34,9 +24,19 @@
     <item>
       <title>DevOps</title>
       <link>/categories/devops/</link>
-      <pubDate>Fri, 17 Apr 2020 04:05:37 +0000</pubDate>
+      <pubDate>Sun, 26 Apr 2020 07:42:20 +0000</pubDate>
       
       <guid>/categories/devops/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>サーバレスブログ</title>
+      <link>/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/</link>
+      <pubDate>Fri, 24 Apr 2020 14:42:53 +0000</pubDate>
+      
+      <guid>/categories/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%AC%E3%82%B9%E3%83%96%E3%83%AD%E3%82%B0/</guid>
       <description></description>
       
     </item>

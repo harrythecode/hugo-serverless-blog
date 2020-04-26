@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>[CI/CD] Github ActionsとS3を連携させる[Git Status &#43; AWS S3 Sync編]&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.23743dc735d42d05eb3f6de3e093a7fa18bf0b2cae9e5be2a5727a390b0863b74dce9d5bbc56372e2ce9e2f8659c4233.css" integrity="sha384-I3Q9xzXULQXrP23j4JOn&#43;hi/CyyunlvipXJ6OQsIY7dNzp1bvFY3Lizp4vhlnEIz">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="[CI/CD] Github ActionsとS3を連携させる[Git Status &#43; AWS S3 Sync編]">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/04/26/git-actions/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="[CI/CD] Github ActionsとS3を連携させる[Git Status &#43; AWS S3 Sync編]">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-04-26-git-actions.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-04-26-git-actions.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><img class="site logo" src="/images/sites/2020-04-26-icon-72x72.png" alt /><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">[CI/CD] Github ActionsとS3を連携させる[Git Status + AWS S3 Sync編]</h1><p class="article date">2020-04-26</p></section><article class="article markdown-body"><p>以前、<a href="https://amezou.com/posts/2020/04/17/aws-s3-sync/"target="_blank">[CI/CD] Github ActionsとS3を連携させる[AWS S3 Sync編]</a>において「<code>--size-only</code>」オプションを利用して更新していましたが、1つ気になることを発見、それは「CSS」を変更する度に新しいcss.minファイルが生成されることです。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/04-26-git-actions-01.png" 
+        target="_blank"><img class="img" src="/images/2020/04-26-git-actions-01.png"/></a></span>
+</span>
+<p>毎回上図のように各HTMLファイルのCSSが変更されるのですが、integrity値が仮に前回と同じ文字数だった場合、CSSが変更されない、と言う問題が発生します。</p>
+<p>どの程度の確率で起こり得るのかは分かりませんが放置するのは良くないと判断したので「aws s3 sync」コマンドに少し修正を加えます。</p>
+<h1 id="変更点">変更点</h1>
+<p>「<code>git status</code>」コマンドで「public」フォルダ配下で変更があるもの全てを対象として「<code>aws s3 sync</code>」コマンドを実行します。</p>
+<ul>
+<li>aws_s3_sync_with_git_status.sh <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>
+<ul>
+<li>S3 Bucketの部分を引数で指定できるように変更しました。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">while</span> getopts b: option
+<span style="color:#66d9ef">do</span>
+<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>option<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+in
+    b<span style="color:#f92672">)</span> S3_BUCKET<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>OPTARG<span style="color:#e6db74">}</span>;;
+<span style="color:#66d9ef">esac</span>
+<span style="color:#66d9ef">done</span>
+
+echo <span style="color:#e6db74">&#34;Target: </span><span style="color:#e6db74">${</span>S3_BUCKET<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+
+<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">${</span>S3_BUCKET<span style="color:#e6db74">}</span> <span style="color:#f92672">]</span>
+<span style="color:#66d9ef">then</span>
+    echo <span style="color:#e6db74">&#34;How to use: -s3 &lt;S3 Bucket Name&gt;&#34;</span>
+    exit <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">fi</span>
+
+FILES<span style="color:#f92672">=()</span>
+<span style="color:#66d9ef">for</span> i in <span style="color:#66d9ef">$(</span> git status -s | sed <span style="color:#e6db74">&#39;s/\s*[a-zA-Z&#34;?]\+ \(.*\)/\1/&#39;</span> | sed <span style="color:#e6db74">&#39;s/&#34;//g&#39;</span> | grep <span style="color:#e6db74">&#34;public/&#34;</span><span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span>
+    FILES<span style="color:#f92672">+=(</span> <span style="color:#e6db74">&#34;</span>$i<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">)</span>
+<span style="color:#66d9ef">done</span>
+<span style="color:#75715e"># echo &#34;${FILES[@]}&#34;</span>
+
+CMDS<span style="color:#f92672">=()</span>
+<span style="color:#66d9ef">for</span> i in <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>FILES[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">do</span>
+    CMDS<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;--include=</span>$i<span style="color:#e6db74">&#34;&#34;*&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">done</span>
+<span style="color:#75715e"># echo ${CMDS[@]}</span>
+
+echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>CMDS[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> | xargs aws s3 sync ./public s3://<span style="color:#e6db74">${</span>S3_BUCKET<span style="color:#e6db74">}</span>/public --delete --exclude <span style="color:#e6db74">&#34;*&#34;</span>
+</code></pre></div><ul>
+<li><a href="https://github.com/amezousan/hugo-serverless-blog/blob/master/.github/workflows/s3_sync_on_master.yml"target="_blank">.github/workflows/s3_sync_on_master.yml</a>
+<ul>
+<li>先程作成したshellスクリプトを実行するように変更。念のためファイルの実行権限も付与します。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">name</span>: Sync files to S3 with the AWS CLI
+  <span style="color:#66d9ef">run</span>: <span style="color:#e6db74">|
+</span><span style="color:#e6db74">    chmod +x ./aws_s3_sync_with_git_status.sh</span>
+    ./aws_s3_sync_with_git_status.sh -b ${{ secrets.AWS_S3_BUCKET }}
+</code></pre></div><p>以上で変更は終了です。</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://www.lambrospetrou.com/articles/aws-s3-sync-git-status/"target="_blank">AWS S3 sync - only modified files, using git status</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</article>
+
+<section id=related_link>
+<h3>合わせて読む</h3><p></p>
+<ul>
+	
+	<li><a href="/posts/2020/04/17/aws-s3-sync/">[CI/CD] Github ActionsとS3を連携させる[AWS S3 Sync編]</a></li>
+	
+	<li><a href="/posts/2020/04/13/ci-cd/">[CI/CD] Github ActionsとS3を連携させる[releaseブランチ編]</a></li>
+	
+	<li><a href="/posts/2020/04/05/github-actions/">[CI/CD] Github ActionsとS3を連携させる[プラン編]</a></li>
+	
+</ul>
+</section>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f04%2f26%2fgit-actions%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=%5bCI%2fCD%5d%20Github%20Actions%e3%81%a8S3%e3%82%92%e9%80%a3%e6%90%ba%e3%81%95%e3%81%9b%e3%82%8b%5bGit%20Status%20%2b%20AWS%20S3%20Sync%e7%b7%a8%5d｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f04%2f26%2fgit-actions%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/aws/>AWS</a><a class="category" href=/categories/ci/cd/>CI/CD</a><a class="category" href=/categories/devops/>DevOps</a><a class="tag" href=/tags/aws/>aws</a><a class="tag" href=/tags/s3/>s3</a><a class="tag" href=/tags/github/>github</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/04/24/site-custom/"><span class="li">&rarr;</span>「hugo/notepadium」にfaviconとロゴの追加、CSSの改良</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>
