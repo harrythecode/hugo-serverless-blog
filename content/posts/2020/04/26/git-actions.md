@@ -28,7 +28,7 @@ description : ""
 「`git status`」コマンドで「public」フォルダ配下で変更があるもの全てを対象として「`aws s3 sync`」コマンドを実行します。
 
 - aws_s3_sync_with_git_status.sh [^1]
-  * S3 Bucketの部分を引数で指定できるように変更しました。
+  - S3 Bucketの部分を引数で指定できるように変更しました。
 ```sh
 #!/bin/bash
 
@@ -72,5 +72,7 @@ echo "${CMDS[@]}" | xargs aws s3 sync ./public s3://${S3_BUCKET}/public --delete
     chmod +x ./aws_s3_sync_with_git_status.sh
     ./aws_s3_sync_with_git_status.sh -b ${{ secrets.AWS_S3_BUCKET }}
 ```
+
+以上で変更は終了です。
 
 [^1]: [AWS S3 sync - only modified files, using git status](https://www.lambrospetrou.com/articles/aws-s3-sync-git-status/)
