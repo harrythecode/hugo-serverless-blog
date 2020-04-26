@@ -2,6 +2,7 @@
 .article-container section.footnotes p { padding: 0; }
 h1,h2,h3,h4,h5,h6 {padding-top: 16px;}
 
+/* Twitter Card */
 .resp-sharing-button__link,
 .resp-sharing-button__icon {
   display: inline-block
