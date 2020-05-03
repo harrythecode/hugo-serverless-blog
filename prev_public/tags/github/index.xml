@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>github on サーバレスブログ</title>
+    <link>/tags/github/</link>
+    <description>Recent content in github on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Sun, 26 Apr 2020 07:42:20 +0000</lastBuildDate>
+    
+        <atom:link href="/tags/github/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>[CI/CD] Github ActionsとS3を連携させる[Git &#43; AWS S3 Sync編]</title>
+      <link>/posts/2020/04/26/git-actions/</link>
+      <pubDate>Sun, 26 Apr 2020 07:42:20 +0000</pubDate>
+      
+      <guid>/posts/2020/04/26/git-actions/</guid>
+      <description>以前、[CI/CD] Github ActionsとS3を連携させる[AWS S3 Sync編]において「--size-only」オプションを利用して更新してい</description>
+      
+    </item>
+    
+    <item>
+      <title>[CI/CD] Github ActionsとS3を連携させる[AWS S3 Sync編]</title>
+      <link>/posts/2020/04/17/aws-s3-sync/</link>
+      <pubDate>Fri, 17 Apr 2020 04:05:37 +0000</pubDate>
+      
+      <guid>/posts/2020/04/17/aws-s3-sync/</guid>
+      <description>今回はいよいよCI/CDの Continuous Delivery (継続デリバリ) を完成させます。 下記の手順は既に終えているものとします。 [CI/CD] Github ActionsとS3を連携させる[</description>
+      
+    </item>
+    
+    <item>
+      <title>[CI/CD] Github ActionsとS3を連携させる[releaseブランチ編]</title>
+      <link>/posts/2020/04/13/ci-cd/</link>
+      <pubDate>Mon, 13 Apr 2020 09:21:59 +0000</pubDate>
+      
+      <guid>/posts/2020/04/13/ci-cd/</guid>
+      <description>今回は[CI/CD] Github ActionsとS3を連携させる[プラン編]の続きです。 やりたいことの確認 前回記事よりやりたいことを再度確認します。 差</description>
+      
+    </item>
+    
+    <item>
+      <title>[CI/CD] Github ActionsとS3を連携させる[プラン編]</title>
+      <link>/posts/2020/04/05/github-actions/</link>
+      <pubDate>Sun, 05 Apr 2020 06:51:24 +0000</pubDate>
+      
+      <guid>/posts/2020/04/05/github-actions/</guid>
+      <description>今回は本サーバレスブログをCI/CD化させてみたいと思います。 はじめに CI/CDとは「Continuous Integration／Conti</description>
+      
+    </item>
+    
+  </channel>
+</rss>

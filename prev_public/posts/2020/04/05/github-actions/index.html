@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>[CI/CD] Github ActionsとS3を連携させる[プラン編]&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.23743dc735d42d05eb3f6de3e093a7fa18bf0b2cae9e5be2a5727a390b0863b74dce9d5bbc56372e2ce9e2f8659c4233.css" integrity="sha384-I3Q9xzXULQXrP23j4JOn&#43;hi/CyyunlvipXJ6OQsIY7dNzp1bvFY3Lizp4vhlnEIz">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="[CI/CD] Github ActionsとS3を連携させる[プラン編]">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/04/05/github-actions/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="[CI/CD] Github ActionsとS3を連携させる[プラン編]">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-04-05-github-actions.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-04-05-github-actions.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><img class="site logo" src="/images/sites/2020-04-26-icon-72x72.png" alt /><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">[CI/CD] Github ActionsとS3を連携させる[プラン編]</h1><p class="article date">2020-04-05</p></section><article class="article markdown-body"><p>今回は本サーバレスブログをCI/CD化させてみたいと思います。</p>
+<h1 id="はじめに">はじめに</h1>
+<p>CI/CDとは「Continuous Integration／Continuous Delivery」の略で、日本語では継続的インティグレーション／継続的デリバリーと言います。</p>
+<p>本ブログでは記事を公開する際に下記のような手順を奪っています。</p>
+<ol>
+<li>記事作成・執筆</li>
+<li>Markdownから記事を生成(Makefileを使っているのでmake deployで完成します)</li>
+<li>publicフォルダのコンテンツをS3にアップロード(Makefile: make uploadでお終い)</li>
+</ol>
+<p>上記手順は全て手動で行われています。なのでこの手順を次の通りに変更します。</p>
+<ol>
+<li>記事作成・執筆</li>
+<li>Githubにコミットする</li>
+<li>(自動)Markdownから記事生成</li>
+<li>(自動)生成物をS3にアップロード</li>
+</ol>
+<p>先程の手順の一部を自動化させます。これをCI/CD化と言います。エンジニアは最新のコードをgithubに上げることだけに集中します。</p>
+<p>この手順に更にテストなどを加えた形が実際に世の中で広まっているDevOpsの考え方です。</p>
+<p>DevOpsエンジニアとして働くためにはこの手の技術を習得することは必須条件です。</p>
+<h1 id="やりたいこと">やりたいこと</h1>
+<p>今回やりたいことを言語化すると次の通りです。</p>
+<ol>
+<li>差分があるものを更新する</li>
+<li>githubに存在しない古いファイルは消す</li>
+<li>記事生成・アップロードを自動化させる</li>
+</ol>
+<p>1, 2はCI/CDと言うよりもAWSのコマンドに依存する可能性が高いです。
+後で調べるとしてまずは3の自動化方法を考えます。</p>
+<h2 id="どんな選択肢があるのか">どんな選択肢があるのか</h2>
+<p>パッと思いつく限りだと次の方法が考えられます。</p>
+<ol>
+<li>Github &lt;-&gt; Github Actions &lt;-&gt; S3</li>
+<li>Github &lt;-&gt; Circle CI &lt;-&gt; S3</li>
+<li>Github &lt;-&gt; Jenkins &lt;-&gt; S3</li>
+</ol>
+<p>どの方法でも良いのですが、今回は使ったことのないGithub Actionsを選択してみます。</p>
+<h1 id="連携方法を調べる">連携方法を調べる</h1>
+<p>&ldquo;github actions s3&quot;で調べると次のような手法が主流のようです。</p>
+<ul>
+<li>github actionsにCI/CD化する内容のyamlファイルを作成する</li>
+</ul>
+<p>更にgithub上で次のようなサンプルを見つけました。-&gt;</p>
+<ul>
+<li><a href="https://github.com/marketplace/actions/configure-aws-credentials-action-for-github-actions"target="_blank">&ldquo;Configure AWS Credentials&rdquo; Action For GitHub Actions</a></li>
+</ul>
+<p>早速試してみたいと思います。設定手順は次を参考にしています。-&gt; <a href="https://medium.com/trackstack/deploying-a-react-app-to-aws-s3-with-github-actions-b1cb9ba75c95"target="_blank">Deploying a React app to AWS S3 with Github Actions</a></p>
+<h1 id="github-actionsを試す">Github Actionsを試す</h1>
+<ol>
+<li>
+<p>CI/CD化するgithubレポジトリにログインした状態で「Settings -&gt; Secrets」へアクセスします。
+<span class="image-container"><span class="link" ><a href="/images/2020/04-05-github-action-01.png" 
+        target="_blank"><img class="img" src="/images/2020/04-05-github-action-01.png"/></a></span>
+</span></p>
+</li>
+<li>
+<p>&ldquo;Add a new secret&quot;リンクをクリックし、下記の３つの値を入力します。値は各自の環境に合わせて適宜変更してください。
+<span class="image-container"><span class="link" ><a href="/images/2020/04-05-github-action-02.png" 
+        target="_blank"><img class="img" src="/images/2020/04-05-github-action-02.png"/></a></span>
+</span></p>
+<ul>
+<li>AWS_ACCESS_KEY_ID: (AWS S3アップロード用)</li>
+<li>AWS_SECRET_ACCESS_KEY: (AWS S3アップロード用)</li>
+<li>AWS_S3_BUCKET: (アップロード対象のS3バケット名)</li>
+</ul>
+<blockquote>
+<p>使用するAccess Key及びSecret Keyのユーザは対象のS3バケットへのアクセス権限が必要です。今回はテスト目的なので一時的に作成したユーザにS3 FullAccessを付与してテストしています。</p>
+</blockquote>
+</li>
+<li>
+<p>CI/CDするgithubレポジトリのActionsタブをクリックします。
+<span class="image-container"><span class="link" ><a href="/images/2020/04-05-github-action-03.png" 
+        target="_blank"><img class="img" src="/images/2020/04-05-github-action-03.png"/></a></span>
+</span></p>
+</li>
+<li>
+<p>今回はテンプレートなしで作成するので「Set up a workflow yourself」を選択
+<span class="image-container"><span class="link" ><a href="/images/2020/04-05-github-action-04.png" 
+        target="_blank"><img class="img" src="/images/2020/04-05-github-action-04.png"/></a></span>
+</span></p>
+</li>
+<li>
+<p>次の通り入力し、Workflowのymlファイルを作成します。branch: &ldquo;helloworld&quot;上で作成することをオススメします。
+<span class="image-container"><span class="link" ><a href="/images/2020/04-05-github-action-05.png" 
+        target="_blank"><img class="img" src="/images/2020/04-05-github-action-05.png"/></a></span>
+</span></p>
+</li>
+</ol>
+<ul>
+<li>main.yml</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">name</span>: HelloWorld
+
+<span style="color:#75715e"># Controls when the action will run. Triggers the workflow on push or pull request</span>
+<span style="color:#75715e"># events but only for the master branch</span>
+<span style="color:#66d9ef">on</span>:
+  <span style="color:#66d9ef">push</span>:
+    <span style="color:#66d9ef">branches</span>: [ helloworld ]
+
+<span style="color:#66d9ef">jobs</span>:
+  <span style="color:#66d9ef">deploy</span>:
+    <span style="color:#66d9ef">name</span>: Upload to Amazon S3
+    <span style="color:#66d9ef">runs-on</span>: ubuntu-latest
+
+    <span style="color:#66d9ef">steps</span>:
+    - <span style="color:#66d9ef">name</span>: Checkout
+      <span style="color:#66d9ef">uses</span>: actions/checkout@v2
+
+    - <span style="color:#66d9ef">name</span>: Configure AWS credentials
+      <span style="color:#66d9ef">uses</span>: aws-actions/configure-aws-credentials@v1
+      <span style="color:#66d9ef">with</span>:
+        <span style="color:#66d9ef">aws-access-key-id</span>: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        <span style="color:#66d9ef">aws-secret-access-key</span>: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        <span style="color:#66d9ef">aws-region</span>: eu-west<span style="color:#ae81ff">-1</span>
+
+    - <span style="color:#66d9ef">name</span>: Copy files to S3 with the AWS CLI
+      <span style="color:#66d9ef">run</span>: <span style="color:#e6db74">|
+</span><span style="color:#e6db74">        aws s3 sync ./helloworld s3://${{ secrets.AWS_S3_BUCKET }}/helloworld</span>
+</code></pre></div><blockquote>
+<p>aws-regionは各自の環境に合わせて変更してください。場合によってはsecrets変数にするのもありです。
+branch: &ldquo;helloworld&quot;を作成することをオススメする理由はgithubの履歴を汚さないためです。テストが終了次第、ブランチを消すだけで後片付けが終了します。</p>
+</blockquote>
+<ol start="4">
+<li>
+<p>helloworldフォルダを作成し、適当なファイルを作成します。
+<span class="image-container"><span class="link" ><a href="/images/2020/04-05-github-action-06.png" 
+        target="_blank"><img class="img" src="/images/2020/04-05-github-action-06.png"/></a></span>
+</span></p>
+</li>
+<li>
+<p>main.ymlファイルを作成するとデプロイが開始されます。
+<span class="image-container"><span class="link" ><a href="/images/2020/04-05-github-action-07.png" 
+        target="_blank"><img class="img" src="/images/2020/04-05-github-action-07.png"/></a></span>
+</span></p>
+</li>
+<li>
+<p>S3上に先程作成したファイルがあればテスト完了です。
+<span class="image-container"><span class="link" ><a href="/images/2020/04-05-github-action-08.png" 
+        target="_blank"><img class="img" src="/images/2020/04-05-github-action-08.png"/></a></span>
+</span></p>
+</li>
+</ol>
+<p>あとはhelloworldブランチを削除すれば後片付け完了です。</p>
+<blockquote>
+<p>ブランチを削除する前に作成したmain.ymlワークフローを先に削除しましょう。現在のgithub actionsはブランチを削除した際、自動的にワークフローが削除されるような仕組みになっていません。</p>
+</blockquote>
+<p><a href="https://github.community/t5/GitHub-Actions/Delete-old-workflow-results/td-p/30589"target="_blank">Github Forum: Delete old workflow results</a></p>
+<p>次回は実際に必要な要件を満たすCI/CD化を目指して行きます。</p>
+<h1 id="参考にしたサイト">参考にしたサイト</h1>
+<ul>
+<li><a href="https://github.com/marketplace/actions/configure-aws-credentials-action-for-github-actions"target="_blank">&ldquo;Configure AWS Credentials&rdquo; Action For GitHub Actions</a></li>
+<li><a href="https://medium.com/trackstack/deploying-a-react-app-to-aws-s3-with-github-actions-b1cb9ba75c95"target="_blank">Deploying a React app to AWS S3 with Github Actions</a></li>
+<li><a href="https://help.github.com/ja/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets"target="_blank">暗号化されたシークレットの作成と保存</a></li>
+</ul>
+</article>
+
+<section id=related_link>
+<h3>合わせて読む</h3><p></p>
+<ul>
+	
+	<li><a href="/posts/2020/03/26/cw-event/">AWSのコストをSlackに通知する【Cloudwatch/SNS編】</a></li>
+	
+	<li><a href="/posts/2020/03/22/cost-lambda/">AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】</a></li>
+	
+	<li><a href="/posts/2020/03/22/cli-lambda/">AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】</a></li>
+	
+</ul>
+</section>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f04%2f05%2fgithub-actions%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=%5bCI%2fCD%5d%20Github%20Actions%e3%81%a8S3%e3%82%92%e9%80%a3%e6%90%ba%e3%81%95%e3%81%9b%e3%82%8b%5b%e3%83%97%e3%83%a9%e3%83%b3%e7%b7%a8%5d｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f04%2f05%2fgithub-actions%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/aws/>AWS</a><a class="category" href=/categories/ci/cd/>CI/CD</a><a class="category" href=/categories/devops/>DevOps</a><a class="tag" href=/tags/aws/>aws</a><a class="tag" href=/tags/s3/>s3</a><a class="tag" href=/tags/github/>github</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/04/13/ci-cd/"><span class="li">&larr;</span>[CI/CD] Github ActionsとS3を連携させる[releaseブランチ編]</a></p><p><a class="link" href="/posts/2020/03/26/cw-event/"><span class="li">&rarr;</span>AWSのコストをSlackに通知する【Cloudwatch/SNS編】</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

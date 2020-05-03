@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>[CI/CD] Github ActionsとS3を連携させる[releaseブランチ編]&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.23743dc735d42d05eb3f6de3e093a7fa18bf0b2cae9e5be2a5727a390b0863b74dce9d5bbc56372e2ce9e2f8659c4233.css" integrity="sha384-I3Q9xzXULQXrP23j4JOn&#43;hi/CyyunlvipXJ6OQsIY7dNzp1bvFY3Lizp4vhlnEIz">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="[CI/CD] Github ActionsとS3を連携させる[releaseブランチ編]">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/04/13/ci-cd/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="[CI/CD] Github ActionsとS3を連携させる[releaseブランチ編]">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-04-13-ci-cd.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-04-13-ci-cd.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><img class="site logo" src="/images/sites/2020-04-26-icon-72x72.png" alt /><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">[CI/CD] Github ActionsとS3を連携させる[releaseブランチ編]</h1><p class="article date">2020-04-13</p></section><article class="article markdown-body"><p>今回は<a href="https://amezou.com/posts/2020/04/05/github-actions/"target="_blank">[CI/CD] Github ActionsとS3を連携させる[プラン編]</a>の続きです。</p>
+<h1 id="やりたいことの確認">やりたいことの確認</h1>
+<p>前回記事よりやりたいことを再度確認します。</p>
+<blockquote>
+<ol>
+<li>差分があるものを更新する</li>
+<li>githubに存在しない古いファイルは消す</li>
+<li>記事生成・アップロードを自動化させる</li>
+</ol>
+</blockquote>
+<p>今回は下記のようなgit flowを用いてCI/CD化していきます。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/04-13-ci-cd-01.png" 
+        target="_blank"><img class="img" src="/images/2020/04-13-ci-cd-01.png"/></a></span>
+</span>
+<ol>
+<li>(手動)masterよりブランチを切って「<code>release/yyyymmdd</code>」ブランチ上で記事作成を行う。</li>
+<li>(手動&amp;自動)Pull Requestを作成・変更する度にHugoDeploy(サムネイル画像生成)が自動で実行され、変更分はreleaseブランチ上にコミットされる。</li>
+<li>(自動)Pull Request上の変更を確認後、手動でmasterブランチへマージする。</li>
+<li>(自動)マージされたファイルなどは全てブログへアップロードされる。</li>
+</ol>
+<p>releaseブランチはマージ後に削除する「GitHub Flowモデル<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>」を採用します。</p>
+<p>どの製品もそうですが何もテストせずにいきなり本番環境へアップロードするのだけはあり得ません。少なからずテスト環境で自動及び手動のテストを行った上で本番へデプロイします。</p>
+<p>テストの代わりにmergeする際に目視確認する手順を踏むようにしています。こうすることでどんな変更があるかを把握した上でデプロイすることが可能です。</p>
+<h1 id="すること手順">すること手順</h1>
+<p>releaseブランチ上では次の２点を行います。</p>
+<ol>
+<li>Hugo及び画像生成コマンドを実行</li>
+<li>成果物をgithub上にアップロード</li>
+</ol>
+<h2 id="完成品">完成品</h2>
+<p>先に完成品をお見せします。</p>
+<ul>
+<li>hugo_deploy_on_release.yml</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">name</span>: HugoDeployOnPullRequest
+
+<span style="color:#66d9ef">on</span>:
+  <span style="color:#66d9ef">pull_request</span>:
+    <span style="color:#66d9ef">types</span>: [ opened, edited ]
+
+<span style="color:#66d9ef">jobs</span>:
+  <span style="color:#66d9ef">deploy</span>:
+    <span style="color:#75715e"># &#34;github.head_ref&#34; returns the branch name on the pull request</span>
+    <span style="color:#66d9ef">if</span>: contains(github.head_ref, <span style="color:#e6db74">&#39;release&#39;</span>) == <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">name</span>: Create Hugo contents &amp; Push to the release branch
+    <span style="color:#66d9ef">runs-on</span>: ubuntu-latest
+    <span style="color:#66d9ef">strategy</span>:
+      <span style="color:#66d9ef">matrix</span>:
+        <span style="color:#66d9ef">python</span>: [<span style="color:#ae81ff">3.6</span>]
+        
+    <span style="color:#66d9ef">steps</span>:
+
+    <span style="color:#75715e">###</span>
+    <span style="color:#75715e"># Initial Setup</span>
+    - <span style="color:#66d9ef">name</span>: Checkout
+      <span style="color:#66d9ef">uses</span>: actions/checkout@v2
+      <span style="color:#66d9ef">with</span>:
+          <span style="color:#66d9ef">ref</span>: ${{ github.head_ref }}
+    - <span style="color:#66d9ef">name</span>: Setup Hugo
+      <span style="color:#66d9ef">uses</span>: peaceiris/actions-hugo@v2
+      <span style="color:#66d9ef">with</span>:
+        <span style="color:#66d9ef">hugo-version</span>: <span style="color:#e6db74">&#39;0.68.3&#39;</span>
+    <span style="color:#75715e"># //</span>
+    <span style="color:#75715e">###</span>
+
+    <span style="color:#75715e">###</span>
+    <span style="color:#75715e"># Install Python &amp; Library for Automatic Thumbnail Script</span>
+    - <span style="color:#66d9ef">name</span>: Setup Python
+      <span style="color:#66d9ef">uses</span>: actions/setup-python@v1
+      <span style="color:#66d9ef">with</span>:
+        <span style="color:#66d9ef">python-version</span>: ${{ matrix.python }}
+    - <span style="color:#66d9ef">name</span>: Install pillow via pip
+      <span style="color:#66d9ef">run</span>: pip install Pillow==<span style="color:#ae81ff">7.0.0</span>
+    - <span style="color:#66d9ef">name</span>: Install pyyaml via pip
+      <span style="color:#66d9ef">run</span>: pip install pyyaml==<span style="color:#ae81ff">5.3.1</span>
+    - <span style="color:#66d9ef">name</span>: Make deploy
+      <span style="color:#66d9ef">run</span>: make deploy
+    <span style="color:#75715e"># //</span>
+    <span style="color:#75715e">###</span>
+
+    <span style="color:#75715e">###</span>
+    <span style="color:#75715e"># Push to the release branch</span>
+
+    <span style="color:#75715e"># To be able to push always even if there is no change</span>
+    - <span style="color:#66d9ef">name</span>: Create report file
+      <span style="color:#66d9ef">run</span>: date +%s &gt; report.txt
+
+    - <span style="color:#66d9ef">name</span>: Commit all changes
+      <span style="color:#66d9ef">run</span>: <span style="color:#e6db74">|
+</span><span style="color:#e6db74">        ls -la</span>
+        git config --global user.email <span style="color:#e6db74">&#34;amezousan@users.noreply.github.com&#34;</span>
+        git config --global user.name <span style="color:#e6db74">&#34;amezousan&#34;</span>
+        git add --all
+        git status
+        git commit -m <span style="color:#e6db74">&#34;Automated deployment&#34;</span>
+        git push origin ${{ github.head_ref }}
+    <span style="color:#75715e"># //</span>
+    <span style="color:#75715e">###</span>
+</code></pre></div><blockquote>
+<p>Commit all changes内のemailとusernameは適宜各自のユーザ名に修正してください。</p>
+</blockquote>
+<p>Workflowを変更した状態で、Pull Requestを作成します。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/04-13-ci-cd-02.png" 
+        target="_blank"><img class="img" src="/images/2020/04-13-ci-cd-02.png"/></a></span>
+</span>
+<p>するとジョブが実行されていることが分かります。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/04-13-ci-cd-03.png" 
+        target="_blank"><img class="img" src="/images/2020/04-13-ci-cd-03.png"/></a></span>
+</span>
+<h2 id="ハマったポイント">ハマったポイント</h2>
+<p>この記事を作成するに当たってハマったポイントです。</p>
+<h3 id="開発方法をややこしくしていた">開発方法をややこしくしていた</h3>
+<p>Gitで使われる開発手法の中に「git-flow, GitHub Flow」の2種類があります。</p>
+<p>当初git-flow (master - development - release)を想定した作りにしようと考えていましたが、developmentとmasterでコミットの差が生まれるのが非常に煩わしく、もっと単純な方法のGitHub Flow (master - release)に落ち着きました。</p>
+<h3 id="hugodeployのタイミングが分からなかった">HugoDeployのタイミングが分からなかった</h3>
+<p>どのタイミングでHugoの記事生成及びサムネイル画像の作成を行えば良いのかが分かりませんでした。「GitHub Actionsのワークフロー構文<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>」とにらめっこし、試行錯誤の結果「Pull Request」を「作成・編集」する際にHugoDeployを行うことにしました。</p>
+<p>この効果は記事作成の際に発揮されます。</p>
+<h3 id="特定のブランチ名のみを対象とする方法">特定のブランチ名のみを対象とする方法</h3>
+<p>今後使用されるブランチは「master」(記事反映用)と「release/yyyymmdd」(記事作成用)の2つですが、ブランチ名にreleaseが付く場合のみ、HugoDeployを実行させたいと考えていました。</p>
+<p>「github actions branch regex」で調べるとGithubのコミュニティ<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>で僕と同じ悩みを抱えている人を発見。</p>
+<p>そこから発想を得て、ブランチ名に「release」が含まれている場合のみ「deploy」ジョブを実行するif文を追加しました。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">jobs</span>:
+  <span style="color:#66d9ef">deploy</span>:
+    <span style="color:#75715e"># &#34;github.head_ref&#34; returns the branch name on the pull request</span>
+    <span style="color:#66d9ef">if</span>: contains(github.head_ref, <span style="color:#e6db74">&#39;release&#39;</span>) == <span style="color:#66d9ef">true</span>
+</code></pre></div><blockquote>
+<p>github.head_ref変数<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>はブランチの状態によって値が変化するので注意。Pull Request上ではブランチ名を返します。</p>
+</blockquote>
+<h3 id="git-commitが面倒だった">git commitが面倒だった</h3>
+<p>HugoDeployで作成したものをreleaseブランチにcommitさせようとしたのですが、actions/checkout<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>のオプション無しでは上手くいきませんでした。と言うのもreleaseブランチを参照しているだけで、そのブランチにcheckoutした訳ではないからです。</p>
+<p>なので下記の通り「release」ブランチにcheckoutするようにオプションを追加しました。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    - <span style="color:#66d9ef">name</span>: Checkout
+      <span style="color:#66d9ef">uses</span>: actions/checkout@v2
+      <span style="color:#66d9ef">with</span>:
+          <span style="color:#66d9ef">ref</span>: ${{ github.head_ref }}
+</code></pre></div><h3 id="hugoのテーマをレポジトリに追加">Hugoのテーマをレポジトリに追加</h3>
+<p>今までを改造してきたHugoテーマの内容をフォルダを名前変更し「hugo-notepadium-custom<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>」を作成、masterブランチへアップロードしています。</p>
+<p>Github Actionsは僕のローカルで編集した内容を参照できるわけがないのでこうしてレポジトリにコードを上げる必要があります。</p>
+<h1 id="最後に">最後に</h1>
+<p>もっと楽にできるかと思いましたが想像した以上に厄介な罠があり、完成までに2日ほどかかってしまいました。</p>
+<p>次は作成したものをmasterブランチへマージし、その際にaws s3 syncコマンドを使ってウェブサイトと同期させていきます。(実はこの記事がアップロードされてる時点で完成しているのですが…)</p>
+<h2 id="他に参考にしたサイト">他に参考にしたサイト</h2>
+<ul>
+<li><a href="https://github.com/peaceiris/actions-hugo"target="_blank">Github - peaceiris/actions-hugo</a></li>
+<li><a href="https://help.github.com/ja/actions/language-and-framework-guides/using-python-with-github-actions"target="_blank">GitHub ActionsでのPythonの利用</a></li>
+<li><a href="https://stackoverflow.com/questions/57921401/push-to-origin-from-github-action/58393457#58393457"target="_blank">Push to origin from GitHub action</a></li>
+<li><a href="https://help.github.com/ja/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address"target="_blank">コミットメールアドレスを設定する</a></li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://www.atmarkit.co.jp/ait/articles/1708/01/news015.html#02"target="_blank">【図解】git-flow、GitHub Flowを開発現場で使い始めるためにこれだけは覚えておこう</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://help.github.com/ja/actions/reference/workflow-syntax-for-github-actions"target="_blank">GitHub Actionsのワークフロー構文</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://github.community/t5/GitHub-Actions/is-there-expression-syntax-to-do-pattern-matching-regex-on/td-p/36295"target="_blank">is there expression syntax to do pattern matching (regex on strings)</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://help.github.com/ja/actions/reference/events-that-trigger-workflows"target="_blank">ワークフローをトリガーするイベント</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://github.com/actions/checkout"target="_blank">github actions/checkout</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://github.com/amezousan/hugo-serverless-blog/tree/master/themes/hugo-notepadium-custom"target="_blank">hugo-serverless-blog/tree/master/themes/hugo-notepadium-custom</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</article>
+
+<section id=related_link>
+<h3>合わせて読む</h3><p></p>
+<ul>
+	
+	<li><a href="/posts/2020/04/05/github-actions/">[CI/CD] Github ActionsとS3を連携させる[プラン編]</a></li>
+	
+	<li><a href="/posts/2020/03/26/cw-event/">AWSのコストをSlackに通知する【Cloudwatch/SNS編】</a></li>
+	
+	<li><a href="/posts/2020/03/22/cost-lambda/">AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】</a></li>
+	
+</ul>
+</section>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f04%2f13%2fci-cd%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=%5bCI%2fCD%5d%20Github%20Actions%e3%81%a8S3%e3%82%92%e9%80%a3%e6%90%ba%e3%81%95%e3%81%9b%e3%82%8b%5brelease%e3%83%96%e3%83%a9%e3%83%b3%e3%83%81%e7%b7%a8%5d｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f04%2f13%2fci-cd%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/aws/>AWS</a><a class="category" href=/categories/ci/cd/>CI/CD</a><a class="category" href=/categories/devops/>DevOps</a><a class="tag" href=/tags/aws/>aws</a><a class="tag" href=/tags/s3/>s3</a><a class="tag" href=/tags/github/>github</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/04/17/aws-s3-sync/"><span class="li">&larr;</span>[CI/CD] Github ActionsとS3を連携させる[AWS S3 Sync編]</a></p><p><a class="link" href="/posts/2020/04/05/github-actions/"><span class="li">&rarr;</span>[CI/CD] Github ActionsとS3を連携させる[プラン編]</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

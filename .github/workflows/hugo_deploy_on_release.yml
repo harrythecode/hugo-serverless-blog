@@ -26,6 +26,9 @@ jobs:
       uses: peaceiris/actions-hugo@v2
       with:
         hugo-version: '0.68.3'
+    - name: Sync current Public folder with Previous Public
+      if: ( github.event_name == 'pull_request' && github.event.action == 'opened' )
+      run: rsync --itemize-changes --checksum --delete --recursive public/ prev_public/
     # //
     ###
 
