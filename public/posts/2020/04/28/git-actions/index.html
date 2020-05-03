@@ -55,6 +55,44 @@
 <span style="color:#75715e"># //</span>
 <span style="color:#75715e">###</span>
 </code></pre></div><ul>
+<li><a href="https://github.com/amezousan/hugo-serverless-blog/blob/master/aws_s3_sync_with_git_status.sh"target="_blank">aws_s3_sync_with_git_status.sh</a>
+<ul>
+<li>先程のrsyncコマンドを再度利用。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">while</span> getopts b: option
+<span style="color:#66d9ef">do</span>
+<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>option<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+in
+    b<span style="color:#f92672">)</span> S3_BUCKET<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>OPTARG<span style="color:#e6db74">}</span>;;
+<span style="color:#66d9ef">esac</span>
+<span style="color:#66d9ef">done</span>
+
+echo <span style="color:#e6db74">&#34;Target: </span><span style="color:#e6db74">${</span>S3_BUCKET<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+
+<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">${</span>S3_BUCKET<span style="color:#e6db74">}</span> <span style="color:#f92672">]</span>
+<span style="color:#66d9ef">then</span>
+    echo <span style="color:#e6db74">&#34;How to use: -b &lt;S3 Bucket Name&gt;&#34;</span>
+    exit <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">fi</span>
+
+FILES<span style="color:#f92672">=()</span>
+<span style="color:#66d9ef">for</span> i in <span style="color:#66d9ef">$(</span> rsync --itemize-changes --checksum --dry-run --delete --recursive public/ prev_public/|awk <span style="color:#e6db74">&#39;{print $2}&#39;</span> <span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span>
+    FILES<span style="color:#f92672">+=(</span> <span style="color:#e6db74">&#34;</span>$i<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">)</span>
+<span style="color:#66d9ef">done</span>
+echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>FILES[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+
+CMDS<span style="color:#f92672">=()</span>
+<span style="color:#66d9ef">for</span> i in <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>FILES[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>; <span style="color:#66d9ef">do</span>
+    CMDS<span style="color:#f92672">+=(</span><span style="color:#e6db74">&#34;--include=</span>$i<span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">done</span>
+echo <span style="color:#e6db74">${</span>CMDS[@]<span style="color:#e6db74">}</span>
+
+echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>CMDS[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> | xargs aws s3 sync ./public s3://<span style="color:#e6db74">${</span>S3_BUCKET<span style="color:#e6db74">}</span>/public --delete --exclude <span style="color:#e6db74">&#34;*&#34;</span>
+</code></pre></div><ul>
 <li><a href="https://github.com/amezousan/hugo-serverless-blog/blob/master/.github/workflows/s3_sync_on_master.yml"target="_blank">s3_sync_on_master.yml</a>
 <ul>
 <li>先程作成したshellスクリプトを実行するように変更。念のためファイルの実行権限も付与します。</li>
