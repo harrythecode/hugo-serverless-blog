@@ -6,17 +6,17 @@
     <description>Recent content in Posts on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Sun, 26 Apr 2020 07:42:20 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 28 Apr 2020 07:42:20 +0000</lastBuildDate>
     
         <atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>[CI/CD] Github ActionsとS3を連携させる[Git &#43; AWS S3 Sync編]</title>
-      <link>/posts/2020/04/26/git-actions/</link>
-      <pubDate>Sun, 26 Apr 2020 07:42:20 +0000</pubDate>
+      <title>[CI/CD] Github ActionsとS3を変更点のみ同期させる</title>
+      <link>/posts/2020/04/28/git-actions/</link>
+      <pubDate>Tue, 28 Apr 2020 07:42:20 +0000</pubDate>
       
-      <guid>/posts/2020/04/26/git-actions/</guid>
+      <guid>/posts/2020/04/28/git-actions/</guid>
       <description>以前、[CI/CD] Github ActionsとS3を連携させる[AWS S3 Sync編]において「--size-only」オプションを利用して更新してい</description>
       
     </item>
