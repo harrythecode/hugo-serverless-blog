@@ -26,6 +26,9 @@ jobs:
       uses: peaceiris/actions-hugo@v2
       with:
         hugo-version: '0.68.3'
+    - name: Save current state of Public folder
+      if: contains(github.event_name, 'opened') == true
+      run: cp -pr public/ prev_public/
     # //
     ###
 
