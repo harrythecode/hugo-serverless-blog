@@ -10,16 +10,19 @@ tags  : [
 ]
 categories: [
     "AWS",
-    "サーバレス技術"
+    "サーバレス技術",
+    "Slackコスト通知"
 ]
 meta_image  : "/thumbnails/2020-03-22-cli-lambda.png"
 description : ""
 ---
 
-以下の記事を読んでない方は先に読むことをオススメします。
+「[AWSのコストをSlackに通知する](/categories/slackコスト通知/)」シリーズです。
 
-- 前々回「[AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】](https://amezou.com/posts/2020/03/21/aws-cost/)」
-- 前回記事「[AWSのコストをSlackに通知する【Lambda - (2)STS編】](https://amezou.com/posts/2020/03/21/aws-cost-sts/)」
+- [AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】](/posts/2020/03/21/aws-cost/)
+- [AWSのコストをSlackに通知する【Lambda - (2)STS編】](/posts/2020/03/21/aws-cost-sts/)
+- AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】
+- [AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】](/posts/2020/03/22/cost-lambda/)
 
 今回はLambdaを実装するに当たって、更に開発スピードを上げるためのコツについて解説します。クラウドエンジニアを目指している方は必見の情報なのでぜひ挑戦してみてください！
 

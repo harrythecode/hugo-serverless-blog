@@ -10,11 +10,19 @@ tags  : [
 ]
 categories: [
     "AWS",
-    "サーバレス技術"
+    "サーバレス技術",
+    "Slackコスト通知"
 ]
 meta_image  : "/thumbnails/2020-03-21-aws-cost.png"
 description : ""
 ---
+
+「[AWSのコストをSlackに通知する](/categories/slackコスト通知/)」シリーズです。
+
+- AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】
+- [AWSのコストをSlackに通知する【Lambda - (2)STS編】](/posts/2020/03/21/aws-cost-sts/)
+- [AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】](/posts/2020/03/22/cli-lambda/)
+- [AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】](/posts/2020/03/22/cost-lambda/)
 
 今回は下記のような仕組みを使います。
 

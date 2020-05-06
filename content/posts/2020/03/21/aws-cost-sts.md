@@ -10,13 +10,21 @@ tags  : [
 ]
 categories: [
     "AWS",
-    "サーバレス技術"
+    "サーバレス技術",
+    "Slackコスト通知"
 ]
 meta_image  : "/thumbnails/2020-03-21-aws-cost-sts.png"
 description : ""
 ---
 
-前回記事「[AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】](https://amezou.com/posts/2020/03/21/aws-cost/)」の続きです。
+「[AWSのコストをSlackに通知する](/categories/slackコスト通知/)」シリーズです。
+
+- [AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】](/posts/2020/03/21/aws-cost/)
+- AWSのコストをSlackに通知する【Lambda - (2)STS編】
+- [AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】](/posts/2020/03/22/cli-lambda/)
+- [AWSのコストをSlackに通知する【Lambda - (4)Lambda実装編】](/posts/2020/03/22/cost-lambda/)
+
+前回記事ではIAMを作成しました。
 
 # おさらい
 
