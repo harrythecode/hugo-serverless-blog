@@ -24,5 +24,6 @@ jobs:
 
     - name: Sync files to S3 with the AWS CLI
       run: |
+        export LC_ALL=en_US.UTF-8
         chmod +x ./aws_s3_sync_with_git_status.sh
         ./aws_s3_sync_with_git_status.sh -b ${{ secrets.AWS_S3_BUCKET }}
