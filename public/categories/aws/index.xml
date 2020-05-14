@@ -6,10 +6,20 @@
     <description>Recent content in AWS on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Tue, 28 Apr 2020 07:42:20 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 14 May 2020 19:43:32 +0000</lastBuildDate>
     
         <atom:link href="/categories/aws/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Github Actions &#43; AWS CLI (s3 sync)で日本語を使う方法</title>
+      <link>/posts/2020/05/14/use-jp/</link>
+      <pubDate>Thu, 14 May 2020 19:43:32 +0000</pubDate>
+      
+      <guid>/posts/2020/05/14/use-jp/</guid>
+      <description>今回はタイトル記載している通り「Github Actions + AWS CLI (s3 sync)で日本語を使う方法」を紹介します。 何が問題なのか 以前の記事「[CI/CD] Github</description>
+      
+    </item>
     
     <item>
       <title>[CI/CD] Github ActionsとS3を変更点のみ同期させる</title>

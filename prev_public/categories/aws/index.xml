@@ -67,7 +67,7 @@
       <pubDate>Sun, 22 Mar 2020 16:50:52 +0100</pubDate>
       
       <guid>/posts/2020/03/22/cost-lambda/</guid>
-      <description>本記事は「AWSのコストをSlackに通知する【Lambda - (3)Lambda準備編】」の続きです。 前回の記事ではLambdaで実行するコ</description>
+      <description>「AWSのコストをSlackに通知する」シリーズです。 AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】 AWSのコスト</description>
       
     </item>
     
@@ -77,7 +77,7 @@
       <pubDate>Sun, 22 Mar 2020 15:58:24 +0100</pubDate>
       
       <guid>/posts/2020/03/22/cli-lambda/</guid>
-      <description>以下の記事を読んでない方は先に読むことをオススメします。 前々回「AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】」 前</description>
+      <description>「AWSのコストをSlackに通知する」シリーズです。 AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】 AWSのコスト</description>
       
     </item>
     
@@ -87,7 +87,7 @@
       <pubDate>Sat, 21 Mar 2020 12:36:44 +0100</pubDate>
       
       <guid>/posts/2020/03/21/aws-cost-sts/</guid>
-      <description>前回記事「AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】」の続きです。 おさらい Lambdaを使って、CloudWa</description>
+      <description>「AWSのコストをSlackに通知する」シリーズです。 AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】 AWSのコスト</description>
       
     </item>
     
@@ -97,7 +97,7 @@
       <pubDate>Sat, 21 Mar 2020 09:15:49 +0100</pubDate>
       
       <guid>/posts/2020/03/21/aws-cost/</guid>
-      <description>今回は下記のような仕組みを使います。 ①Cloudwatch Events: Lambdaを定期実行(毎朝8時) ②Lambda: Lambda実行用のIAMロー</description>
+      <description>「AWSのコストをSlackに通知する」シリーズです。 AWSのコストをSlackに通知する【Lambda - (1)IAM作成編】 AWSのコスト</description>
       
     </item>
     

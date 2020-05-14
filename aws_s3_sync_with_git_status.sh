@@ -1,5 +1,7 @@
 #!/bin/bash
 
+locale
+
 while getopts b: option
 do
 case "${option}"
@@ -24,7 +26,7 @@ echo "${FILES[@]}"
 
 CMDS=()
 for i in "${FILES[@]}"; do
-    CMDS+=("--include=$i")
+    CMDS+=("--include=\"$i\"")
 done
 echo ${CMDS[@]}
 
