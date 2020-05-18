@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>elasticsearch on サーバレスブログ</title>
+    <link>/tags/elasticsearch/</link>
+    <description>Recent content in elasticsearch on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Mon, 18 May 2020 10:48:33 +0000</lastBuildDate>
+    
+        <atom:link href="/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Elasticsearchで400エラーが出た時の対処法【動的テンプレート編】</title>
+      <link>/posts/2020/05/18/400-es/</link>
+      <pubDate>Mon, 18 May 2020 10:48:33 +0000</pubDate>
+      
+      <guid>/posts/2020/05/18/400-es/</guid>
+      <description>DevOpsの技術スタックで必要とされる「Elasticsearch」(ログ解析などに用いられる)ですが、トラブルシューティング系のドキュメ</description>
+      
+    </item>
+    
+  </channel>
+</rss>
