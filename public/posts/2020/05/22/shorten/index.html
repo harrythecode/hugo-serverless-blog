@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>最近あちこちに情報発信をしているので省略URLを作ってみた&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.23743dc735d42d05eb3f6de3e093a7fa18bf0b2cae9e5be2a5727a390b0863b74dce9d5bbc56372e2ce9e2f8659c4233.css" integrity="sha384-I3Q9xzXULQXrP23j4JOn&#43;hi/CyyunlvipXJ6OQsIY7dNzp1bvFY3Lizp4vhlnEIz">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="最近あちこちに情報発信をしているので省略URLを作ってみた">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/05/22/shorten/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="最近あちこちに情報発信をしているので省略URLを作ってみた">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-05-22-shorten.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-05-22-shorten.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><img class="site logo" src="/images/sites/2020-04-26-icon-72x72.png" alt /><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">最近あちこちに情報発信をしているので省略URLを作ってみた</h1><p class="article date">2020-05-22</p></section><article class="article markdown-body"><p>タイトルの通りです。「Twitter, Note」をメインに情報発信していましたが、本日Youtubeにてスウェーデン語の情報も発信するようになりました。</p>
+<h1 id="対象urlを決める">対象URLを決める</h1>
+<p>取り敢えず僕がユーザとして見たいページのリンクをリストアップしてみます。</p>
+<ol>
+<li>noteプロフィール <a href="https://note.com/amezousan/n/na786e0b2840a"target="_blank">https://note.com/amezousan/n/na786e0b2840a</a>
+<ul>
+<li>👉「<a href="https://amezou.com/note"target="_blank">amezou.com/note</a>」に短縮したい</li>
+</ul>
+</li>
+<li>youtubeチャンネル <a href="https://www.youtube.com/channel/UCHPpT0Dtun0jTamZG6Wpeew/"target="_blank">https://www.youtube.com/channel/UCHPpT0Dtun0jTamZG6Wpeew/</a>
+<ul>
+<li>👉「<a href="https://amezou.com/tube"target="_blank">amezou.com/tube</a>」に短縮したい</li>
+</ul>
+</li>
+</ol>
+<p>そんなにありませんね！意外と悲しい！</p>
+<h1 id="どうやって短縮urlを作るか">どうやって短縮URLを作るか</h1>
+<p>技術的には大まかに下記3つがあります。</p>
+<ul>
+<li>動的アプリを作成し、HTTPステータス(301,302)をきちんと設定して飛ばす</li>
+<li>HTMLのRefreshタグを使う</li>
+<li>JavaScriptのLocationを使う</li>
+</ul>
+<p>今回は手間をかけたくないので「HTMLのRefresh」で解決しようと思います。</p>
+<h1 id="変更点">変更点</h1>
+<p>今回は次の記事を参考にしました👉<a href="https://encr.jp/blog/posts/20200304_morning/"target="_blank">質問箱のurlが長いので、短縮urlを自作してみた</a></p>
+<p>HTMLの文法を修正して以下のようになりました！</p>
+<ul>
+<li>変更箇所</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">hugo-serverless-blog$ tree -L <span style="color:#ae81ff">3</span>
+.
+├── Makefile
+├── README.md
+...
+├── static
+│   ├── note
+│   │   └── index.html <span style="color:#75715e">#「note」フォルダにindex.htmlを追加</span>
+│   ├── tube
+│   │   └── index.html <span style="color:#75715e">#「tube」フォルダにindex.htmlを追加</span>
+</code></pre></div><ul>
+<li>static/note/index.html</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">html</span>&gt;
+&lt;<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">http-equiv</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;refresh&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0;URL=https://note.com/amezousan/n/na786e0b2840a&#34;</span>&gt;
+&lt;<span style="color:#f92672">title</span>&gt;転送URL&lt;/<span style="color:#f92672">title</span>&gt;
+&lt;/<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">body</span>&gt;
+自動で転送されない場合には&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://note.com/amezousan/n/na786e0b2840a&#34;</span>&gt;こちら&lt;/<span style="color:#f92672">a</span>&gt;をクリックしてください。
+&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;
+</code></pre></div><ul>
+<li>static/tube/index.html</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">html</span>&gt;
+&lt;<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">http-equiv</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;refresh&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0;URL=https://www.youtube.com/channel/UCHPpT0Dtun0jTamZG6Wpeew/&#34;</span>&gt;
+&lt;<span style="color:#f92672">title</span>&gt;転送URL&lt;/<span style="color:#f92672">title</span>&gt;
+&lt;/<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">body</span>&gt;
+自動で転送されない場合には&lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://www.youtube.com/channel/UCHPpT0Dtun0jTamZG6Wpeew/&#34;</span>&gt;こちら&lt;/<span style="color:#f92672">a</span>&gt;をクリックしてください。
+&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;
+</code></pre></div><p>これで完成！</p>
+<ul>
+<li>noteプロフィール　<a href="https://amezou.com/note"target="_blank">amezou.com/note</a></li>
+<li>youtubeチャンネル <a href="https://amezou.com/tube"target="_blank">amezou.com/tube</a></li>
+</ul>
+</article>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f05%2f22%2fshorten%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=%e6%9c%80%e8%bf%91%e3%81%82%e3%81%a1%e3%81%93%e3%81%a1%e3%81%ab%e6%83%85%e5%a0%b1%e7%99%ba%e4%bf%a1%e3%82%92%e3%81%97%e3%81%a6%e3%81%84%e3%82%8b%e3%81%ae%e3%81%a7%e7%9c%81%e7%95%a5URL%e3%82%92%e4%bd%9c%e3%81%a3%e3%81%a6%e3%81%bf%e3%81%9f｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f05%2f22%2fshorten%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/%E5%B0%8F%E3%83%8D%E3%82%BF/>小ネタ</a><a class="tag" href=/tags/html/>html</a><a class="tag" href=/tags/javascript/>javascript</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/05/18/400-es/"><span class="li">&rarr;</span>Elasticsearchで400エラーが出た時の対処法【動的テンプレート編】</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>
