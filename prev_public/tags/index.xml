@@ -6,10 +6,30 @@
     <description>Recent content in Tags on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Mon, 18 May 2020 10:48:33 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 22 May 2020 21:02:13 +0000</lastBuildDate>
     
         <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>html</title>
+      <link>/tags/html/</link>
+      <pubDate>Fri, 22 May 2020 21:02:13 +0000</pubDate>
+      
+      <guid>/tags/html/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>javascript</title>
+      <link>/tags/javascript/</link>
+      <pubDate>Fri, 22 May 2020 21:02:13 +0000</pubDate>
+      
+      <guid>/tags/javascript/</guid>
+      <description></description>
+      
+    </item>
     
     <item>
       <title>elasticsearch</title>

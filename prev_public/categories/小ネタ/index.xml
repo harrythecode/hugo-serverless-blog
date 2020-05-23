@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>小ネタ on サーバレスブログ</title>
+    <link>/categories/%E5%B0%8F%E3%83%8D%E3%82%BF/</link>
+    <description>Recent content in 小ネタ on サーバレスブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Fri, 22 May 2020 21:02:13 +0000</lastBuildDate>
+    
+        <atom:link href="/categories/%E5%B0%8F%E3%83%8D%E3%82%BF/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>最近あちこちに情報発信をしているので省略URLを作ってみた</title>
+      <link>/posts/2020/05/22/shorten/</link>
+      <pubDate>Fri, 22 May 2020 21:02:13 +0000</pubDate>
+      
+      <guid>/posts/2020/05/22/shorten/</guid>
+      <description>タイトルの通りです。「Twitter, Note」をメインに情報発信していましたが、本日Youtubeにてスウェーデン語の情報も発信するように</description>
+      
+    </item>
+    
+  </channel>
+</rss>
