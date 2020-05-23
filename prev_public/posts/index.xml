@@ -6,10 +6,20 @@
     <description>Recent content in Posts on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Thu, 14 May 2020 19:43:32 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 18 May 2020 10:48:33 +0000</lastBuildDate>
     
         <atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Elasticsearchで400エラーが出た時の対処法【動的テンプレート編】</title>
+      <link>/posts/2020/05/18/400-es/</link>
+      <pubDate>Mon, 18 May 2020 10:48:33 +0000</pubDate>
+      
+      <guid>/posts/2020/05/18/400-es/</guid>
+      <description>DevOpsの技術スタックで必要とされる「Elasticsearch」(ログ解析などに用いられる)ですが、トラブルシューティング系のドキュメ</description>
+      
+    </item>
     
     <item>
       <title>Github Actions &#43; AWS CLI (s3 sync)で日本語を使う方法</title>
