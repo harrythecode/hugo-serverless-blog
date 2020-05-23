@@ -16,7 +16,7 @@ description : ""
 
 <div align=center>
 
-[<i class="fab fa-twitter fa-3x" aria-hidden="true"></i>](https://twitter.com/amezousan)  [<i class="fab fa-github fa-3x" aria-hidden="true"></i>](https://github.com/amezousan)
+[<i class="fab fa-twitter fa-3x" aria-hidden="true"></i>](https://twitter.com/amezousan)  [<i class="fab fa-github fa-3x" aria-hidden="true"></i>](https://github.com/amezousan)  [<i class="fab fa-youtube fa-3x" aria-hidden="true"></i>](/tube)
 </div>
 
 どうも、スウェーデンでITエンジニアをしているあめぞうです。初めての方も多いと思われるので、簡単に自己紹介だけ。
