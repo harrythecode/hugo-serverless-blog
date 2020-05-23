@@ -6,10 +6,20 @@
     <description>Recent content in Posts on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Mon, 18 May 2020 10:48:33 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 22 May 2020 21:02:13 +0000</lastBuildDate>
     
         <atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>最近あちこちに情報発信をしているので省略URLを作ってみた</title>
+      <link>/posts/2020/05/22/shorten/</link>
+      <pubDate>Fri, 22 May 2020 21:02:13 +0000</pubDate>
+      
+      <guid>/posts/2020/05/22/shorten/</guid>
+      <description>タイトルの通りです。「Twitter, Note」をメインに情報発信していましたが、本日Youtubeにてスウェーデン語の情報も発信するように</description>
+      
+    </item>
     
     <item>
       <title>Elasticsearchで400エラーが出た時の対処法【動的テンプレート編】</title>
