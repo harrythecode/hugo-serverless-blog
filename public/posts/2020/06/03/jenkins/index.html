@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://amezou.com/custom-css/fontawesome-all.min.css"><title>Jenkinsのベストプラクティスについて調べてみた&nbsp;&ndash;&nbsp;サーバレスブログ</title><link rel="stylesheet" href="/css/core.min.23743dc735d42d05eb3f6de3e093a7fa18bf0b2cae9e5be2a5727a390b0863b74dce9d5bbc56372e2ce9e2f8659c4233.css" integrity="sha384-I3Q9xzXULQXrP23j4JOn&#43;hi/CyyunlvipXJ6OQsIY7dNzp1bvFY3Lizp4vhlnEIz">
+<meta property="og:site_name"           content="サーバレスブログ">
+<meta property="og:title"               content="Jenkinsのベストプラクティスについて調べてみた">
+<meta property="og:url"                 content="https://amezou.com/posts/2020/06/03/jenkins/">
+<meta property="og:type"                content="article">
+<meta name="twitter:card"               content="summary_large_image">
+<meta property="twitter:title"          content="Jenkinsのベストプラクティスについて調べてみた">
+
+    <meta property="og:description"         content="世の中のイケてる技術を紹介していきます。">
+    <meta property="twitter:description"    content="世の中のイケてる技術を紹介していきます。">
+
+
+    
+    <meta property="og:image"       content="https://amezou.com/thumbnails/2020-06-03-jenkins.png">
+    <meta property="og:image:url"   content="https://amezou.com/thumbnails/2020-06-03-jenkins.png">
+    
+<body>
+    <div class="base-body"><section id="header" class="site header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><img class="site logo" src="/images/sites/2020-04-26-icon-72x72.png" alt /><span class="site name">サーバレスブログ</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about/">About</a></nav></div></span></div><div class="site slogan"><span class="title">世の中のイケてる技術を紹介していきます。</span></div></section><div id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Jenkinsのベストプラクティスについて調べてみた</h1><p class="article date">2020-06-03</p></section><article class="article markdown-body"><p>DevOpsの活動に欠かせないCI/CDツール。世の中にはたくさんの種類があります。例えば以下のようなものが現在流行っています。</p>
+<ul>
+<li>Jenkins</li>
+<li>Circle CI</li>
+<li>Github Actions</li>
+<li>AWS Pipeline</li>
+<li>etc&hellip;</li>
+</ul>
+<p>まだまだ探せばあると思いますが今回は「Jenkins」のCI/CDを設計する上でどのようなことに気をつけるべきかを調べます。</p>
+<h1 id="検索してみる">検索してみる</h1>
+<p>検索キーワードは自分は以下の通り使い分けています。</p>
+<h3 id="概念を理解する時">概念を理解する時</h3>
+<pre><code>&quot;検索ワード&quot; tutorial
+</code></pre><h3 id="使い方のオススメを調べる時">使い方のオススメを調べる時</h3>
+<pre><code>&quot;検索ワード&quot; best practices
+</code></pre><h3 id="実例を理解する時">実例を理解する時</h3>
+<pre><code>&quot;検索ワード&quot; qiita
+&quot;検索ワード&quot; example
+&quot;検索ワード&quot; doc
+</code></pre><h2 id="jenkins-best-practicesで検索">「jenkins best practices」で検索</h2>
+<p>こちらのサイトが良くまとまっていました。</p>
+<ul>
+<li><a href="https://dzone.com/articles/top-10-best-practices-for-jenkins-pipeline"target="_blank">Top 10 Best Practices for Jenkins Pipeline</a></li>
+</ul>
+<pre><code>1. Do: Use the Real Jenkins Pipeline
+2. Do: Develop Your Pipeline As Code
+3. Do: All Work Within a Stage
+4. Do: All Material Work Within a Node
+5. Do: Work You Can Within a Parallel Step
+6. Do: Acquire Nodes Within Parallel Steps
+7. Don’t: Use Input Within a Node Block
+8. Do: Wrap Your Inputs in a Timeout
+9. Don’t: Set Environment Variables With the env Global Variable
+10. Do: Prefer Stashing Files to Archiving Them
+</code></pre><p>以下は上記の一言まとめです。</p>
+<h3 id="1-do-最新版を使う">1. DO: 最新版を使う</h3>
+<p>古いプラグインは使わない。</p>
+<h3 id="2-do-パイプラインをコード化する">2. DO: パイプラインをコード化する</h3>
+<p>GithubやBitBucketなどのコードレポジトリと連携して必ずパイプラインをコード化しましょう。手動で設定するのは「DevOps」の道からかけ離れて行く古いやり方です。</p>
+<h3 id="3-do-ステージごとに分ける">3. DO: ステージごとに分ける</h3>
+<p>「build, test, deploy」のように各ステージに分けてコードを書くと後で視覚的に見ることができます。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">stage <span style="color:#e6db74">&#39;build&#39;</span>
+//build
+stage <span style="color:#e6db74">&#39;test&#39;</span>
+//test
+</code></pre></div><h3 id="4-do-環境整備はnode内で行う">4. DO: 環境整備はnode内で行う</h3>
+<p>環境整備、例えば「Gitサーバからコードをクーロンする、Javaアプリをコンパイルする」などの処理は全て「<code>node</code>」エージェント内で済ませましょう。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">stage <span style="color:#e6db74">&#39;build&#39;</span>
+node{
+    checkout scm
+    sh <span style="color:#e6db74">&#39;mvn clean install&#39;</span>
+}
+</code></pre></div><h3 id="5-do-パイプラインの並列処理をする">5. DO: パイプラインの並列処理をする</h3>
+<p>Jenkinsはあなたのパイプラインを並列処理することができます。並列処理することで開発スピードが格段に上がります。</p>
+<h3 id="6-do-環境整備nodeの並列処理をする">6. DO: 環境整備(node)の並列処理をする</h3>
+<p>4 &amp; 5の組み合わせです。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">parallel <span style="color:#e6db74">&#39;integration-tests&#39;</span>:{
+    node(<span style="color:#e6db74">&#39;mvn-3.3&#39;</span>){ ... }
+}, <span style="color:#e6db74">&#39;functional-tests&#39;</span>:{
+    node(<span style="color:#e6db74">&#39;selenium&#39;</span>){ ... }
+}
+</code></pre></div><h3 id="7-dont-ユーザ入力要求はnode内で行わない">7. DON&rsquo;T: ユーザ入力要求はnode内で行わない</h3>
+<p>inputステートメントは自動または手動のいずれにしろ、時間を取ります。node内ではJenkins内で負荷が高い処理のため、そこにユーザ入力要求を入れ込むのはパフォーマンス低下につながるので絶対に辞めましょう。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">stage <span style="color:#e6db74">&#39;deployment&#39;</span>
+input <span style="color:#e6db74">&#39;Do you approve deployment?&#39;</span>
+node{
+    //deploy the things
+}
+</code></pre></div><h3 id="8-do-inputはタイムアウトをつける">8. DO: inputはタイムアウトをつける</h3>
+<p>パイプラインをきれいに保つためにinputがなかった場合の時も考えることがベストプラクティスです。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">timeout(time:<span style="color:#ae81ff">5</span>, unit:<span style="color:#e6db74">&#39;DAYS&#39;</span>) {
+    <span style="color:#66d9ef">input message:&#39;Approve deployment?&#39;, submitter</span>: <span style="color:#e6db74">&#39;it-ops&#39;</span>
+}
+</code></pre></div><h3 id="9-dont-envグローバル変数を用いて環境変数を設定しない">9. DON&rsquo;T: envグローバル変数を用いて環境変数を設定しない</h3>
+<p>env変数はグローバルであり、環境をグローバルに変更するため、直接変更することは推奨されません。なので「<code>withEnv</code>」を使いましょう。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">withEnv([<span style="color:#e6db74">&#34;PATH+MAVEN=${tool &#39;m3&#39;}/bin&#34;</span>]) {
+    sh <span style="color:#e6db74">&#34;mvn clean verify&#34;</span>
+}
+</code></pre></div><h3 id="10-do-archiveの代わりにstashunstashを使う">10. DO: archiveの代わりにstash/unstashを使う</h3>
+<p>stash機能が実装される前はarchiveが「node, stage」間でファイルをやり取りするベストプラクティスでした。今は「stash/unstash」を使うことを推奨しています。(archiveは元々長期的なストレージの役割を目的としています。)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#66d9ef">stash excludes: &#39;target/&#39;, name</span>: <span style="color:#e6db74">&#39;source&#39;</span>
+unstash <span style="color:#e6db74">&#39;source&#39;</span>
+</code></pre></div><h2 id="ちなみにjenkins-ベストプラクティスでも検索">ちなみに「jenkins ベストプラクティス」でも検索</h2>
+<ul>
+<li><a href="https://qiita.com/AHA_oretama/items/16d61d0af566ee7bf77c"target="_blank">Jenkins Pipeline の11個のベスト・プラクティス - Qiita</a>
+<ul>
+<li>僕が見つけた英語サイトの翻訳ですね。</li>
+</ul>
+</li>
+<li><a href="https://www.slideshare.net/miyajan/jenkins-61133952"target="_blank">Jenkins 再入門</a>
+<ul>
+<li>情報自体は2016年と古いが何が運用を妨げるのかを理解することが可能。</li>
+</ul>
+</li>
+</ul>
+<h1 id="最後に">最後に</h1>
+<p>自分なりに調べましたがJenkinsはできることの自由さゆえ、様々な使われ方をされるようです。ベストプラクティスに沿わない使い方をするとチーム全体で運用するという条件の場合、かなりカオスな状況になることが容易に推測されます。</p>
+<p>何かを実装する前にこういった知識を事前に仕入れておくことで、自分がゼロから構築する際の手助けとなります。</p>
+<p>DevOpsエンジニアとして学ぶことは幅広く、こういった良く使われる手法を効率良く学ぶことがDevOpsエンジニアとしての価値を高める手段でもあります。</p>
+<p>今回は以上です。</p>
+</article>
+
+<p></p>
+<div align=center>...SNSにもシェアしてみる？</div><div align=center>
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2famezou.com%2fposts%2f2020%2f06%2f03%2fjenkins%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=Jenkins%e3%81%ae%e3%83%99%e3%82%b9%e3%83%88%e3%83%97%e3%83%a9%e3%82%af%e3%83%86%e3%82%a3%e3%82%b9%e3%81%ab%e3%81%a4%e3%81%84%e3%81%a6%e8%aa%bf%e3%81%b9%e3%81%a6%e3%81%bf%e3%81%9f｜%40amezousan&url=https%3a%2f%2famezou.com%2fposts%2f2020%2f06%2f03%2fjenkins%2f" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+    </div>
+  </div>
+</a>
+</div>
+<section class="article labels"><a class="category" href=/categories/devops/>DevOps</a><a class="category" href=/categories/ci/cd/>CI/CD</a><a class="tag" href=/tags/jenkins/>jenkins</a></section><section class="article license">(C) 2020, All Rights Reserved.</section></div><section class="article navigation"><p><a class="link" href="/posts/2020/05/22/shorten/"><span class="li">&rarr;</span>最近あちこちに情報発信をしているので省略URLを作ってみた</a></p></section></div><section id="footer" class="footer"><div class="footer-wrap">
+    <p class="copyright">サーバレスブログ</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>
