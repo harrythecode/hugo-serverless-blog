@@ -11,6 +11,16 @@
     
     
     <item>
+      <title>Jenkinsのベストプラクティスについて調べてみた</title>
+      <link>/posts/2020/06/03/jenkins/</link>
+      <pubDate>Wed, 03 Jun 2020 12:36:16 +0000</pubDate>
+      
+      <guid>/posts/2020/06/03/jenkins/</guid>
+      <description>DevOpsの活動に欠かせないCI/CDツール。世の中にはたくさんの種類があります。例えば以下のようなものが現在流行っています。 Jenkins Circle CI Github Actions AWS</description>
+      
+    </item>
+    
+    <item>
       <title>Github Actions &#43; AWS CLI (s3 sync)で日本語を使う方法</title>
       <link>/posts/2020/05/14/use-jp/</link>
       <pubDate>Thu, 14 May 2020 19:43:32 +0000</pubDate>

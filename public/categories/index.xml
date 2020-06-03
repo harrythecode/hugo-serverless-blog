@@ -6,10 +6,20 @@
     <description>Recent content in Categories on サーバレスブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Fri, 22 May 2020 21:02:13 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 03 Jun 2020 12:36:16 +0000</lastBuildDate>
     
         <atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>DevOps</title>
+      <link>/categories/devops/</link>
+      <pubDate>Wed, 03 Jun 2020 12:36:16 +0000</pubDate>
+      
+      <guid>/categories/devops/</guid>
+      <description></description>
+      
+    </item>
     
     <item>
       <title>小ネタ</title>
@@ -17,16 +27,6 @@
       <pubDate>Fri, 22 May 2020 21:02:13 +0000</pubDate>
       
       <guid>/categories/%E5%B0%8F%E3%83%8D%E3%82%BF/</guid>
-      <description></description>
-      
-    </item>
-    
-    <item>
-      <title>DevOps</title>
-      <link>/categories/devops/</link>
-      <pubDate>Mon, 18 May 2020 10:48:33 +0000</pubDate>
-      
-      <guid>/categories/devops/</guid>
       <description></description>
       
     </item>

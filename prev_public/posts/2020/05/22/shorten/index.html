@@ -92,6 +92,61 @@
 <li>noteプロフィール　<a href="https://amezou.com/note"target="_blank">amezou.com/note</a></li>
 <li>youtubeチャンネル <a href="https://amezou.com/tube"target="_blank">amezou.com/tube</a></li>
 </ul>
+<h1 id="追記20200523-1012-utc2-小さなバグ発見">(追記:20200523 10:12 UTC+2) 小さなバグ発見</h1>
+<p>このブログをアップロードした時点で以下2つのバグを発見しました。</p>
+<ul>
+<li>リダイレクト先のページが文字化けしてる</li>
+<li>「/」なしのURLにアクセスすると「/public」が勝手につく</li>
+</ul>
+<p>順に解説していきます。</p>
+<h2 id="リダイレクト先のページが文字化けしてる">リダイレクト先のページが文字化けしてる</h2>
+<p>下記が実際の画像です。見事に文字化けしてますね！これの原因はページを編集時には「UTF-8」で書いてたのに実際のページでは「Unicode」と言う別の文字エンコードが指定されたことにより発生しています。</p>
+<span class="image-container"><span class="link" ><a href="/images/2020/05-22-shorten-01.png" 
+        target="_blank"><img class="img" src="/images/2020/05-22-shorten-01.png"/></a></span>
+</span>
+<p>これの解決策は、該当ページにで文字エンコードを指定すれば良いです。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff">diff --git a/static/note/index.html b/static/note/index.html
+index 33bccb0..3725e72 100644
+<span style="color:#f92672">--- a/static/note/index.html
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/static/note/index.html
+</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -1,5 +1,6 @@
+</span><span style="color:#75715e"></span> &lt;html&gt;
+ &lt;head&gt;
+<span style="color:#a6e22e">+&lt;meta charset=&#34;UTF-8&#34;&gt;
+</span><span style="color:#a6e22e"></span> &lt;meta http-equiv=&#34;refresh&#34; content=&#34;0;URL=https://note.com/amezousan/n/na786e0b2840a&#34;&gt;
+ &lt;title&gt;転送URL&lt;/title&gt;
+ &lt;/head&gt;
+diff --git a/static/tube/index.html b/static/tube/index.html
+index 8dd740e..4d6c0e4 100644
+<span style="color:#f92672">--- a/static/tube/index.html
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/static/tube/index.html
+</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -1,5 +1,6 @@
+</span><span style="color:#75715e"></span> &lt;html&gt;
+ &lt;head&gt;
+<span style="color:#a6e22e">+&lt;meta charset=&#34;UTF-8&#34;&gt;
+</span><span style="color:#a6e22e"></span> &lt;meta http-equiv=&#34;refresh&#34; content=&#34;0;URL=https://www.youtube.com/channel/UCHPpT0Dtun0jTamZG6Wpeew/&#34;&gt;
+ &lt;title&gt;転送URL&lt;/title&gt;
+ &lt;/head&gt;
+</code></pre></div><h2 id="なしのurlにアクセスするとpublicが勝手につく">「/」なしのURLにアクセスすると「/public」が勝手につく</h2>
+<p>これは例えば、<a href="https://amezou.com/note"target="_blank">amezou.com/note</a>にアクセスすると「<a href="https://amezou.com/public/note/"target="_blank">amezou.com/public/note/</a>」にリダイレクトされます。</p>
+<p>理由はS3のデフォルトルートへのリダイレクト機能を有効にしているから。本ブログの記事はアクセス制御もかねて公開部分はS3の「/public」フォルダ上に配置されています。</p>
+<p>何でこの機能を有効にしたのか忘れましたが確かこれをONにしないとまずかったのを覚えています。</p>
+<p>なのでひとまずはpublicフォルダ配下に同じフォルダ・ファイルを作成します。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ tree -d
+.
+├── static
+│   ├── custom-css
+│   ├── fonts
+│   ├── images
+│   │   ├── <span style="color:#ae81ff">2020</span>
+│   │   └── sites
+│   ├── note
+│   ├── public
+│   │   ├── note <span style="color:#75715e"># 作成したものをindex.htmlごとコピー</span>
+│   │   └── tube <span style="color:#75715e"># 作成したものをindex.htmlごとコピー</span>
+│   ├── thumbnails
+│   ├── tube
+</code></pre></div><p>近々S3から別の媒体へと移住する予定なのでそれまでは暫定的な対処で我慢します。</p>
 </article>
 
 <p></p>

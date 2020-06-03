@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"><url>
-    <loc>https://amezou.com/categories/</loc><lastmod>2020-05-22T21:02:13+00:00</lastmod></url><url>
+    <loc>https://amezou.com/categories/</loc><lastmod>2020-06-03T12:36:16+00:00</lastmod></url><url>
+    <loc>https://amezou.com/categories/devops/</loc><lastmod>2020-06-03T12:36:16+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/jenkins/</loc><lastmod>2020-06-03T12:36:16+00:00</lastmod></url><url>
+    <loc>https://amezou.com/posts/2020/06/03/jenkins/</loc><lastmod>2020-06-03T12:36:16+00:00</lastmod></url><url>
+    <loc>https://amezou.com/posts/</loc><lastmod>2020-06-03T12:36:16+00:00</lastmod></url><url>
+    <loc>https://amezou.com/tags/</loc><lastmod>2020-06-03T12:36:16+00:00</lastmod></url><url>
     <loc>https://amezou.com/tags/html/</loc><lastmod>2020-05-22T21:02:13+00:00</lastmod></url><url>
     <loc>https://amezou.com/tags/javascript/</loc><lastmod>2020-05-22T21:02:13+00:00</lastmod></url><url>
-    <loc>https://amezou.com/posts/</loc><lastmod>2020-05-22T21:02:13+00:00</lastmod></url><url>
-    <loc>https://amezou.com/tags/</loc><lastmod>2020-05-22T21:02:13+00:00</lastmod></url><url>
     <loc>https://amezou.com/categories/%E5%B0%8F%E3%83%8D%E3%82%BF/</loc><lastmod>2020-05-22T21:02:13+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/05/22/shorten/</loc><lastmod>2020-05-22T21:02:13+00:00</lastmod></url><url>
-    <loc>https://amezou.com/categories/devops/</loc><lastmod>2020-05-18T10:48:33+00:00</lastmod></url><url>
     <loc>https://amezou.com/tags/elasticsearch/</loc><lastmod>2020-05-18T10:48:33+00:00</lastmod></url><url>
     <loc>https://amezou.com/posts/2020/05/18/400-es/</loc><lastmod>2020-05-18T10:48:33+00:00</lastmod></url><url>
     <loc>https://amezou.com/tags/fluentd/</loc><lastmod>2020-05-18T10:48:33+00:00</lastmod></url><url>
